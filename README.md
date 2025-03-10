@@ -2,21 +2,21 @@
 
 
 ## Table of Contents
-- **Part 0: About This Guide**
-- **Part 1: About Environment Variables and Bash Scripts**
-- **Part 2: Setting Up 32-Bit Support**
-- **Part 3: Choosing a Wine Version**
-- **Part 4: Basic Guild Wars Installation**
-- **Part 5: DXVK**
-- **Part 6: ESYNC/FSYNC/NTSYNC**
-- **Part 7: TexMod/uMod/gMod**
-- **Part 8: DirectSong**
-- **Part 9: DSOAL-GW1**
-- **Part 10: Toolbox**
-- **Part 11: Chat Filter**
-- **Part 12: 4K UI Fixes**
-- **Part 13: paw\*ned2**
-- **Part 14: Multiboxing**
+- **[Part 0: About This Guide](#part-0-about-this-guide)**
+- **[Part 1: About Environment Variables and Bash Scripts](#part-1-about-environment-variables-and-bash-scripts)**
+- **[Part 2: Setting Up 32-Bit Support](#part-2-setting-up-32-bit-support)**
+- **[Part 3: Choosing a Wine Version](#part-3-choosing-a-wine-version)**
+- **[Part 4: Basic Guild Wars Installation](#part-4-basic-guild-wars-installation)**
+- **[Part 5: DXVK](#part-5-dxvk)**
+- **[Part 6: ESYNC/FSYNC/NTSYNC](#part-6-esyncfsyncntsync)**
+- **[Part 7: TexMod/uMod/gMod](#part-7-texmodumodgmod)**
+- **[Part 8: DirectSong](#part-8-directsong)**
+- **[Part 9: DSOAL-GW1](#part-9-dsoal-gw1)**
+- **[Part 10: Toolbox](#part-10-toolbox)**
+- **[Part 11: Chat Filter](#part-11-chat-filter)**
+- **[Part 12: 4K UI Fixes](#part-12-4k-ui-fixes)**
+- **[Part 13: paw\*ned2](#part-13-pawned2)**
+- **[Part 14: Multiboxing](#part-14-multiboxing)**
 
 
 ## Part 0: About This Guide
