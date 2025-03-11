@@ -55,8 +55,7 @@ wine start /d "C:\Program Files (x86)\uMod" "C:\Program Files (x86)\uMod\uMod.ex
 sleep 1
 wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe" &
 sleep 1
-cd ~/Documents/GWToolboxpp/
-wine Injector.exe -n Gw.exe -i GWToolboxdll.dll
+wine start /d "C:\Program Files (x86)\GWToolbox" "C:\Program Files (x86)\GWToolbox\GWToolbox.exe" /quiet
 ```
 
 
@@ -246,7 +245,7 @@ WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\uMod" "C:\Program Fi
 #### gMod:
 gMod is a simplified continuation of uMod with ongoing development since 2023. gMod removes uMod's UI, on-the-fly texture loading/unloading/reloading, texture dumping, etc. in favor of once-at-launch configuration via a simple text file. Consequently, gMod is more performant than either TexMod or uMod. Unless you need uMod's ability to load and unload mods while Guild Wars is running, gMod is probably the best choice. gMod offers two ways to "hook" Guild Wars.
 - First, you can rename `gmod.dll` to `d3d9.dll` and place it in Guild Wars' directory. Then start Guild Wars normally. (Note: On some versions of wine, the dll load order seems to be inconsistent in some weird prefix dependent way. If this doesn't work, try making a fresh prefix, or try a different version of wine.)
-- Second, you can inject `gmod.dll` into the Guild Wars process before it loads `dxd9.dll`. Unfortunately, gMod is primarily intended for use with launcher programs (GW Launcher, Daybreak) that don't work on Linux. But it also works with simple commandline injectors like [injectory](https://github.com/blole/injectory). Which, assuming everything is in the Guild Wars directory, would work like this:
+- Second, you can inject `gmod.dll` into the Guild Wars process before it loads `dxd9.dll`. Unfortunately, gMod is primarily intended for use with launcher programs (GW Launcher, Daybreak) that don't work on Linux. But it also works with simple commandline injectors like [Injectory](https://github.com/blole/injectory). Which, assuming everything is in the Guild Wars directory, would work like this:
 ```
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i gMod.dll
 ```
@@ -346,11 +345,21 @@ The launcher will create a directory at `~/Documents/GWToolboxpp/` containing th
 
 We now have two options to run Toolbox:
 
-#### Option 1, The Launcher:
+#### Option 1, The Launcher UI:
 One option is to use the launcher. When Guild Wars is running, the launcher should show the option to select a running Guild Wars instance by character name. You can start the launcher before or after you start Guild Wars.
 
-#### Option 2, Injection:
-The other option is to inject the Toolbox dll via a command-line tool. This is more complicated, but the payoff is a zero-click startup. We can use [injectory](https://github.com/blole/injectory) for this task. Like so:
+#### Option 2, Silent Injection:
+The other option is to inject the Toolbox dll silently via a command-line tool. The selling point of this option is that you can attain a zero-click Toolbox startup. Toolbox's launcher has a `/quiet` option that automatically injects if it only sees one Gw.exe process:
+
+```
+#!/bin/bash
+export WINEPREFIX=~/.wine-gw
+{launch Guild Wars, maybe launch uMod first}
+sleep 1
+wine start /d "C:\Program Files (x86)\GWToolbox" "C:\Program Files (x86)\GWToolbox\GWToolbox.exe /quiet"
+```
+
+It's also possible to inject the Toolbox dll with generic injection utilities like [injectory](https://github.com/blole/injectory) or [Injector](https://github.com/nefarius/Injector). A potentially useful feature of Injectory is the ability to launch Gw.exe in a paused state and inject before it starts running:
 
 ```
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i "C:\users\<your username>\Documents\GWToolboxpp\GWToolboxdll.dll"
@@ -359,19 +368,6 @@ Injectory supports injecting multiple dlls at once, so you can do both gMod and 
 ```
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i gMod.dll -i "C:\users\<your username>\Documents\GWToolboxpp\GWToolboxdll.dll"
 ```
-
-Alternatively, you can inject Toolbox into a running GW process. Injectory can do that with `-n Gw.exe` instead of `-l Gw.exe`. Another option for injecting into a running process is simply named [Injector](https://github.com/nefarius/Injector). Injector avoids the annoying momentary dos prompt pop-up, but you must be careful of the working directory because it [only accepts relative paths for the dll](https://github.com/nefarius/Injector/issues/31). Example of delayed injection with Injector:
-
-Download [the latest version of Injector](https://github.com/nefarius/Injector/releases/) and extract to `~/Documents/GWToolboxpp/`
-
-```
-export WINEPREFIX=~/.wine-gw
-wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe"
-sleep 1
-cd ~/Documents/GWToolboxpp/
-wine Injector.exe -n Gw.exe -i GWToolboxdll.dll
-```
-(You might have to increase the sleep value on a slower system.)
 
 
 ## Part 11: Chat Filter
@@ -420,10 +416,10 @@ sudo apt-get install gamescope
 **Gamescope Limitations:**
 - While gamescope works great with a AMD GPU, nVidia driver support is spotty. It took a long time for nVidia to add a crucial feature to their driver, then it worked but was buggy on older cards, and then recently the v555 nVidia driver completely broke gamescope. And they will probably break it again with future drivers. **Gamescope may not work if you have an nVidia GPU.**
 - You cannot launch two different programs in the same gamescope instance, unless one launches the other.
-     - If you launch Guild Wars in gamescope, the Toolbox launcher will crash when trying to find Guild Wars' window. You need to inject toolbox using a commandline injector.
+     - If you launch Guild Wars in gamescope, the Toolbox launcher will crash when trying to find Guild Wars' window. You need to inject toolbox using the `/quiet` option or a generic commandline injector.
      - If you launch Guild Wars and uMod independently, using the dll to hook Guild Wars, then Guild Wars will crash after the splash screen.
      - If you launch uMod, and then launch Guild Wars from inside uMod, that will work. However, there's no way to return focus to uMod's UI. So you might as well use gMod.
-     - If you launch Guild Wars via a commandline injector like injectory, that will work. At least in gamescope 3.11. Whether this works is hit-or-miss in gamescope >=3.16, as described above.
+     - If you launch Guild Wars via a commandline injector like Injectory, that will work. At least in gamescope 3.11. Whether this works is hit-or-miss in gamescope >=3.16, as described above.
 
 
 #### WineGE/ProtonGE with FSR Fake Resolution Patch:
