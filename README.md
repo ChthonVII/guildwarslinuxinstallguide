@@ -286,6 +286,12 @@ Now run `RegisterDirectSongDirectory.exe` *with the DirectSong directory as the 
 WINEPREFIX=~/.wine-gw wine start /d "C:\DirectSong" "C:\DirectSong\RegisterDirectSongDirectory.exe"
 ```
 
+(As an alternative to running `RegisterDirectSongDirectory.exe`, you can create the necessary registry key with regedit. Sample .reg files are provided in the "extras" directory of this repo. Use the "Win32" or "Win64" file that matches your wine prefix (which will be win64 if you've been following this guide), edit it to point to your DirectSong directory, and import it with redegit:
+```
+WINEPREFIX=~/.wine-gw wine regedit"
+```
+)
+
 To test that DirectSong is working, start Guild Wars, wait until the login screen music has been playing for a few seconds, press F11, and look for a gold DirectSong icon at the bottom of the sound menu.
 
 Since it may fail silently, you should also test that wma decoding is working. (If it's not working, DirectSong shows the gold icon, but skips wma files.) To test this, edit `~/.wine-gw/drive_c/DirectSong/Guild Wars/GuildWars.ds`. Find the line that starts with "loginen" and copy/paste some distinctive wma file to the start of that list. When you start Guild Wars, that wma file should be the first thing played on the login screen.
