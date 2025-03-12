@@ -158,8 +158,8 @@ Now would also be a good time to symlink your build templates and screenshots di
 
 Move anything inside `~/.wine-gw/drive_c/Program\ Files/Guild\ Wars/Templates` and `~/.wine-gw/drive_c/Program\ Files/Guild\ Wars/Screens` to the equivalent directories in `~/Documents`, then delete them.
 ```
-ln -s ~/Documents/Guild\ Wars/Templates/ ~/.wine-gw/drive_c/Program\ Files\ (x86)/Guild\ Wars/Templates
-ln -s ~/Documents/Guild\ Wars/Screens/ ~/.wine-gw/drive_c/Program\ Files\ (x86)/Guild\ Wars/Screens
+ln -s ~/Documents/Guild\ Wars/Templates/ ~/.wine-gw/drive_c/Program\ Files\ \(x86\)/Guild\ Wars/Templates
+ln -s ~/Documents/Guild\ Wars/Screens/ ~/.wine-gw/drive_c/Program\ Files\ \(x86\)/Guild\ Wars/Screens
 ```
 
 
