@@ -17,6 +17,7 @@
 - **[Part 12: 4K UI Fixes](#part-12-4k-ui-fixes)**
 - **[Part 13: paw\*ned2](#part-13-pawned2)**
 - **[Part 14: Multiboxing](#part-14-multiboxing)**
+- **[Part 15: Solving Steam Headaches](#part-15-solving-steam-headaches)**
 
 
 ## Part 0: About This Guide
@@ -110,7 +111,7 @@ This recommendation may change in the relatively near future when NTSYNC becomes
 
 - "Distro" wine. Wine packaged by your Linux distribution. This is almost always an outdated version of official wine. There's pretty much no reason to ever use this. Reconfigure your package manager to use the official repo for wine.
 - "TkG" wine. A custom build of wine that usually has the "staging" patches, plus a few other popular patches. For example, [this](https://github.com/Kron4ek/Wine-Builds?tab=readme-ov-file). The main selling point over official `wine-staging` is FSYNC. (See Part 6.)
-- Proton, inside Steam. A version of wine made by Valve for Steam featuring gaming/performance modifications. It is possible to add Guild Wars to Steam as a "non-Steam game." This is not recommended because Steam's UI makes it difficult to run uMod and Toolbox in the same wine prefix. (It might be possible with tools like [steamtinkerlaunch](https://github.com/sonic2kk/steamtinkerlaunch).)
+- Proton, inside Steam. A version of wine made by Valve for Steam featuring gaming/performance modifications. It is possible to add Guild Wars to Steam as a "non-Steam game." This is not recommended because Steam's UI makes it difficult to run uMod and Toolbox in the same wine prefix. See Part 15.)
 - Proton, outside Steam. It is possible to run Proton, or wine with Proton-like modifications outside of Steam. In the past, this was recommended for maximum performance. Unfortunately, this is not a viable option anymore due to a Guild Wars bug. In the past year or so, the universe of "Proton without Steam" has condensed into [umu](https://github.com/Open-Wine-Components). Running under umu, Guild Wars incorrectly detects it's running under Steam, attempts to initialize the Steam API, then crashes when SteamAPI_Init() fails. If you want to run Guild Wars using "protonfied" wine, the only option at present is to use an old version, like the [last build of Wine-GE](https://github.com/GloriousEggroll/wine-ge-custom/releases/tag/GE-Proton8-26).
 
 It is possible to have more than one version of wine present on your system. By default, whichever version is installed as `/usr/bin/wine` is what will run when the `wine` command is invoked. Usually this will be "official" wine (or "distro" wine). Since that's the recommended version, **simply invoking `wine` yields the correct result for most people**. If you want to run a version of wine other than the one at `/usr/bin/wine`, you can do that via environment variables, like so:
@@ -471,6 +472,92 @@ Note: Yes, you can copy/paste a whole wine prefix. And, yes, that is the fastest
 
 Note: Since Toolbox settings/data are shared, it might be possible to clobber one instance by changing settings/data in another. If this turns out to cause problems, try `winetricks sandbox`.
 
+
+## Part 15: Solving Steam Headaches
+
+As noted in Part 3, running Guild Wars inside Steam is ***not*** recommended because it makes it difficult to install and use many of the add-ons covered in this guide, particularly uMod and Toolbox. This section explains how to work around most of those difficulties. Presently, with enough effort, most add-ons can be made to work inside Steam, except that DirectSong can't play wma files and Toolbox is flakey.
+
+#### Adding Guild Wars to Steam
+In the lower left corner of Steam's "Library" view, select "Add a Game," and then "Add a Non-Steam Game," then browse for wherever `Gw.exe` is located and select it. In the "Properties" menu "Shortcut" tab, set "START IN" equal to the directory containing `Gw.exe`.  In the "Properties" menu "Compatibility" tab, set it to use whatever version of Proton you like.
+
+#### Running Arbitrary Commands in Steam
+The cause of most Steam-related headaches is that `Gw.exe` is the *only* command Steam wants to run in that wine prefix. You need to bypass this behavior in order to install or use add-ons. There are two way to do this: First, some add-ons can be fully installed using your default version of wine before handing the prefix over to Steam. Second, you can use bash string manipulation to make Steam run an arbitrary command in place of `Gw.exe`.
+
+To run arbitrary commands in Steam, first download and save `steamarbitrarycommand.sh` from this repo's "extras" directory. Now in the "Properties" menu "Shortcut" tab, set "LAUNCH OPTIONS" to `{path_to_script}/steamarbitrarycommand.sh %command% --run {real_command}` where `real_command` is the command you want run instead of `Gw.exe.` (Credit: This script came from [here](https://steamcommunity.com/app/221410/discussions/0/3731826842455660050/#c3731826842456351164).)
+
+This script makes it possible to run `winecfg` to change dll overrides, or run `cmd` for a Windows command prompt for `RegisterDirectSongDirectory.exe`, or `regedit` to edit the registry directly, etc.
+
+#### Running Multiple Commands in Steam
+A secondary cause of headaches with Steam is that it only wants to run *one command at a time* in a given wine prefix. This is a problem if you want to run Guild Wars, uMod, and Toolbox's launcher simultaneously, for example. The workaround for this is to use `steamarbitrarycommand.sh` to launch a Windows .bat script in place of `Gw.exe`, having the .bat script run multiple programs. Place your .bat script in the Guild Wars installation directory and invoke `{path_to_script}/steamarbitrarycommand.sh %command% --run example.bat`.
+
+Example .bat script:
+```
+echo off
+cd ..
+cd uMod
+start uMod.exe
+ping -n 3 127.0.0.1 > nul
+cd ..
+cd "Guild Wars"
+start Gw.exe
+ping -n 3 127.0.0.1 > nul
+cd ..
+cd GWToolbox
+start GWToolbox.exe
+```
+
+What is `ping` doing there? Proton doesn't have `timeout`; `ping` works as a substitute because it sends pings one second apart, so the duration is about `-n` minus 1 seconds. (127.0.0.1 is the local loopback address, i.e., yourself.)
+
+(As an alternative, [steamtinkerlaunch](https://github.com/sonic2kk/steamtinkerlaunch) might also be able to do some of the arbitrary/multiple command things a "full bells and whistles" Guild Wars needs.)
+
+#### DXVK in Steam
+Do not set up DXVK manually if running Guild Wars under Steam. Steam swaps around symlinks for DirectX dlls at launch time depending on the run options you select. DXVK is used by default. See Part 5 for more information.
+
+#### ESYNC/FSYNC in Steam
+Steam enables FSYNC by default, and ESYNC by default if FSYNC is disabled or unsupported by your kernel. If you want to turn them off, set the environment variables `PROTON_NO_FSYNC=1` and/or `PROTON_NO_ESYNC=1`. See Part 6 for more information.
+
+#### TexMod in Steam
+Use `steamarbitrarycommand.sh` to launch TexMod in place of `Gw.exe`, then launch Guild Wars from inside TexMod.  See Part 7 for more information.
+
+#### uMod in Steam
+If you want to launch Guild Wars from inside uMod, use `steamarbitrarycommand.sh` to launch uMod in place of `Gw.exe`.  See Part 7 for more information.
+
+If you want to use the dll hook, copy `d3d9.dll` from uMod's directory to Guild Wars' directory, and use `steamarbitrarycommand.sh` to launch a .bat script that starts uMod, sleeps for a moment, then launches Guild Wars. See the example .bat file above.  See Part 7 for more information.
+
+#### gMod in Steam
+Just rename `gmod.dll` to `d3d9.dll` and place it in Guild Wars' directory. See Part 7 for more information.
+
+#### DirectSong in Steam
+Only partially functional. There is no wma playback. Proton uses its own bundled gstreamer plugins rather than your system libraries, and they do not seem to able to decode wma. Might work in a future version of Proton. Might be able to work around this by installing Windows Media Player 11 -- although that is really miserable.
+
+Use `steamarbitrarycommand.sh` to run `cmd` to run `RegisterDirectSongDirectory.exe`. It will use a roundabout Z:\ path rather than a shorter C:\ one. And, strangely, this works. Changing it to the equivalent C: path doesn't work.
+
+Use `steamarbitrarycommand.sh` to run `winecfg` to set the dll overrides. Or set them using default wine before handing the prefix over to Steam.
+
+See Part 8 for more information.
+
+#### DSOAL-GW1 in Steam
+Use `steamarbitrarycommand.sh` to run `winecfg` to set the dll override found `dsound`. Or set it using default wine before handing the prefix over to Steam.
+
+Use `steamuser`'s user directory for the OpenAL config files. 
+
+Proton does not pass along the environment variables that tell DSOAL-GW and ALSOFT to log to files. If you want to turn on logging to check that everything is working, use `steamarbitrarycommand.sh` to run `cmd`, then use `SET DSOAL_LOGLEVEL=2` etc. and run `Gw.exe` from inside `cmd`. 
+
+See Part 9 for more information.
+
+#### Toolbox in Steam
+
+Toolbox can be made to work in Steam, but it's flakey.
+
+Run `winecfg` (either via `steamarbitrarycommand.sh` or before handing the prefix over to Steam) to disable desktop integration so that the Documents directory is not a symlink to your Linux user's Documents directory. Steam's containerization makes this directory inaccessible, causing Toolbox to fail.
+
+Now it should be possible to run Toolbox and Guild Wars simultaneously by using `steamarbitrarycommand.sh` to run a .bat script to launch both.
+
+Toolbox is now able to create and mostly populate its installation directory at `~/.steam/steam/steamapps/compatdata/{random_ numbers}/pfx/drive_c/users/steamuser/Documents/GWToolboxpp/`. However, for some reason, Toolbox is not able to save GWToolboxdll.dll to that directory. Quite strangely, it will download the dll to *somewhere*, and it will inject it, and Toolbox will work in-game; but it won't save it. Consequently, Toolbox will prompt to "install" every time it's run. You can work around this by manually placing the file in that directory. You will probably have to manually replace the file whenever Toolbox has an update.
+
+Don't use the `/quiet` parameter. It sometimes causes Guild Wars to black screen and hang. (This is probably a timing issue. Maybe fixable by increasing the delay before starting Toolbox.)
+
+See Part 10 for more information.
 
 
 
