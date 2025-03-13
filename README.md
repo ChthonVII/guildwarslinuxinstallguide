@@ -333,7 +333,7 @@ export WINEPREFIX=~/.wine-gw
 export DSOAL_LOGLEVEL=2
 export DSOAL_LOGFILE="C:\Program Files (x86)\Guild Wars\DSOAL_log.txt"
 export ALSOFT_LOGLEVEL=3
-export ALSOFT_LOGFILE=""C:\Program Files (x86)\Guild Wars\ALSOFT_log.txt"
+export ALSOFT_LOGFILE="C:\Program Files (x86)\Guild Wars\ALSOFT_log.txt"
 wine start /d "C:\Program File (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe"
 ```
 
