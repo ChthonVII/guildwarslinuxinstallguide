@@ -184,7 +184,7 @@ winecfg
 
 Now test. If it's working, this command should cause the DXVK HUD to appear in the upper left:
 ```
-DXVK_HUD=1 wine start /d "C:\Program Files\Guild Wars" "C:\Program Files\Guild Wars\Gw.exe"
+DXVK_HUD=1 wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe"
 ```
 
 #### Bonus: Super Antialiasing
@@ -321,7 +321,7 @@ Consult `DSOAL-GW1_readme.txt` for how to edit `alsoft.ini` and the preset files
 
 In order to activate “Use 3D Audio Hardware” and “Use EAX,” you must run Guild Wars one time with the -dsound flag:
 ```
-WINEPREFIX=~/.wine-gw wine start /d "C:\Program File (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe" -dsound
+WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe" -dsound
 ```
 Now you should be able to check the boxes in the in-game sound menu accessible by pressing F11. These settings are stored in the dat file, so DSOAL-GW1 will continue to work without the -dsound flag once they are activated.
 
@@ -334,7 +334,7 @@ export DSOAL_LOGLEVEL=2
 export DSOAL_LOGFILE="C:\Program Files (x86)\Guild Wars\DSOAL_log.txt"
 export ALSOFT_LOGLEVEL=3
 export ALSOFT_LOGFILE="C:\Program Files (x86)\Guild Wars\ALSOFT_log.txt"
-wine start /d "C:\Program File (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe"
+wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe"
 ```
 
 For further details, consult `DSOAL-GW1_readme.txt`.
@@ -373,7 +373,7 @@ WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Prog
 ```
 Injectory supports injecting multiple dlls at once, so you can do both gMod and Toolbox with:
 ```
-WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i gMod.dll -i "C:\users\<your username>\Documents\GWToolboxpp\GWToolboxdll.dll"
+WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i gMod.dll -i "C:\users\<your username>\Documents\GWToolboxpp\GWToolboxdll.dll"
 ```
 
 
@@ -454,7 +454,7 @@ wine </path to/>pwndSetup_en.exe
 
 Now you can run paw\*ned2 with:
 ```
-wine start /d "C:\Program Files\pawned2" "C:\Program Files\pawned2\pawned2.exe"
+wine start /d "C:\Program Files (x86)\pawned2" "C:\Program Files (x86)\pawned2\pawned2.exe"
 ```
 
 Note: The installer is old and installs a version of paw\*ned2 from 2013. You need to use the self-updater in paw\*ned2's help menu to get a newer version that can handle the anniversary skills.
