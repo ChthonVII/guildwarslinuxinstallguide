@@ -47,7 +47,7 @@ Example script: start uMod and Guild Wars, then inject Toolbox (using "new wow64
 ```
 #!/bin/bash
 
-export WINEPREFIX=~/.wine-gw64
+export WINEPREFIX=~/.wine-gw
 export WINEARCH=wow64
 export WINEDEBUG=-all
 export WINEESYNC=1
