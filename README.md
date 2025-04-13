@@ -246,7 +246,7 @@ WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\uMod" "C:\Program Fi
 #### gMod:
 gMod is a simplified continuation of uMod with ongoing development since 2023. gMod removes uMod's UI, on-the-fly texture loading/unloading/reloading, texture dumping, etc. in favor of once-at-launch configuration via a simple text file. Consequently, gMod is more performant than either TexMod or uMod. Unless you need uMod's ability to load and unload mods while Guild Wars is running, gMod is probably the best choice. gMod offers two ways to "hook" Guild Wars.
 - First, you can rename `gmod.dll` to `d3d9.dll` and place it in Guild Wars' directory. Then start Guild Wars normally. (Note: On some versions of wine, the dll load order seems to be inconsistent in some weird prefix dependent way. If this doesn't work, try making a fresh prefix, or try a different version of wine.)
-- Second, you can inject `gmod.dll` into the Guild Wars process before it loads `dxd9.dll`. Unfortunately, gMod is primarily intended for use with launcher programs (GW Launcher, Daybreak) that don't work on Linux. But it also works with simple commandline injectors like [Injectory](https://github.com/blole/injectory). Which, assuming everything is in the Guild Wars directory, would work like this:
+- Second, you can inject `gmod.dll` into the Guild Wars process before it loads `dxd9.dll`. gMod is integrated into GW Launcher (see Part 14), and also works with simple commandline injectors like [Injectory](https://github.com/blole/injectory). Which, assuming everything is in the Guild Wars directory, would work like this:
 ```
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i gMod.dll
 ```
@@ -466,11 +466,24 @@ Note: Paw\*ned2 has terrible high dpi support.
 
 ## Part 14: Multiboxing
 
-Running multiple instances of Guild Wars at the same time is *much* easier in Linux than Windows. Simply install GW into multiple wine prefixes. Each copy will run isolated from the others.
+
+#### Multiple Wine Prefixes
+
+Running multiple instances of Guild Wars at the same time is *much* easier in Linux than Windows. Simply install GW into multiple wine prefixes. Each copy will run isolated from the others. This is the recommended way to multibox Guild Wars on Linux.
 
 Note: Yes, you can copy/paste a whole wine prefix. And, yes, that is the fastest way to do this. Just make sure to correct any symlinks you made so they point to the copies.
 
-Note: Since Toolbox settings/data are shared, it might be possible to clobber one instance by changing settings/data in another. If this turns out to cause problems, try `winetricks sandbox`.
+Note: Since Toolbox settings/data are shared, it might be possible to clobber one instance by changing settings/data in another. If this turns out to cause problems, try `winetricks sandbox` or disable desktop inntegration in winecfg.
+
+#### GW Launcher
+
+[GW Launcher](https://github.com/gwdevhub/gwlauncher) is a Windows multiboxing solution, but it can be run in wine. While Linux users have little use for it as a multiboxing solution, you might possibly want to use it for its other features. To install GW Launcher:
+
+- Use winetricks to install dotnetdesktop8.
+- Use the "framework dependent" version of the exe file.
+- When creating a profile in GWLauncher, check the box for "run elevated."
+
+GW Launcher will attempt to inject any dll files you put in its "plugins" directory. This is one way to inject Toolbox. It will also inject its own copy of gMod if you put any tpf or zip files in the "plugins" directory. If you'd rather use uMod than gMod, then don't put any tpf or zip files in GW Launcher's "plugins" directory, and run uMod by renaming its dll as described in Part 7 or putting its dll in GW Launcher's "plugins" directory to be injected.
 
 
 ## Part 15: Solving Steam Headaches
