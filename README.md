@@ -281,8 +281,6 @@ WINEPREFIX=~/.wine-gw winecfg
 ```
 ... go the the "Libraries" tab, and set overrides to "native, builtin" for "wmvcore" and "wmasf".
 
-(In the past it was necessary to use winetricks to install Windows Media Player, which was a royal pain in the arse.)
-
 
 Finally, you need DirectSong itself, and music to go with it. Download the [DirectSong Revivial Pack](https://mega.nz/#!P2pWGK7C!FLZZOOWE1c5gYSgCqD4MC464m6ZvK1oGTlS08hLpnKw). This contains the DirectSong files along with *all* of the collector's edition and bonus music.
 
@@ -302,6 +300,22 @@ WINEPREFIX=~/.wine-gw wine regedit"
 To test that DirectSong is working, start Guild Wars, wait until the login screen music has been playing for a few seconds, press F11, and look for a gold DirectSong icon at the bottom of the sound menu.
 
 Since it may fail silently, you should also test that wma decoding is working. (If it's not working, DirectSong shows the gold icon, but skips wma files.) To test this, edit `~/.wine-gw/drive_c/DirectSong/Guild Wars/GuildWars.ds`. Find the line that starts with "loginen" and copy/paste some distinctive wma file to the start of that list. When you start Guild Wars, that wma file should be the first thing played on the login screen.
+
+#### (Painful) Alternative Method for Proton:
+Proton bundles its own gstreamer that can't decode wma. To work around this, you need to install Windows Media Player 11. This is a *large* pain in the arse. So much so that you should probably strongly consider just using a non-Proton version of wine rather than proceeding with these instructions. Note that these instructions only work for Proton (and protonified wine) outside of Steam; I still have not figured out wma decoding inside Steam.
+- Use `winecfg` to set the Windows version to WinXP.
+- Use `winetricks` to install `wmp11`.
+- Use `winecfg` to set the Windows version to Win2003. (This is the only way to pass the validation screen.)
+- You must run Windows Media Player to complete installation.
+- `wine start /d "C:\Program Files (x86)\Windows Media Player" "C:\Program Files (x86)\Windows Media Player\wmplayer.exe"`
+- The validation screen will hang for a long time, but eventually pass.
+- After the EULA screen, Windows Media Player will hang or crash. Force kill it, and make sure to kill any zombie wine processes.
+- Use `winecfg` to set the Windows version to WinXP.
+- `wine start /d "C:\Program Files (x86)\Windows Media Player" "C:\Program Files (x86)\Windows Media Player\wmplayer.exe"`
+- This time, the first-run installation tasks will complete and Windows Media Player will start. The UI is unusable, and you will need to force kill it.
+- Use `winecfg` to set the Windows version back to whatever you started with.
+- Installing Windows Media Player added a bunch of crap file associations to `~/.local/share/applications`. You probably want to delete them.
+- Install DirectSong itself as described above.
 
 
 ## Part 9: DSOAL-GW1
