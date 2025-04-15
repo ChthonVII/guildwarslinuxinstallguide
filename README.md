@@ -111,7 +111,7 @@ This recommendation may change in the relatively near future when NTSYNC becomes
 
 - "Distro" wine. Wine packaged by your Linux distribution. This is almost always an outdated version of official wine. There's pretty much no reason to ever use this. Reconfigure your package manager to use the official repo for wine.
 - "TkG" wine. A custom build of wine that usually has the "staging" patches, plus a few other popular patches. For example, [this](https://github.com/Kron4ek/Wine-Builds?tab=readme-ov-file). The main selling point over official `wine-staging` is FSYNC. (See Part 6.)
-- Proton, inside Steam. A version of wine made by Valve for Steam featuring gaming/performance modifications. It is possible to add Guild Wars to Steam as a "non-Steam game." This is not recommended because Steam's UI makes it difficult to run uMod and Toolbox in the same wine prefix. See Part 15.)
+- Proton, inside Steam. A version of wine made by Valve for Steam featuring gaming/performance modifications. It is possible to add Guild Wars to Steam as a "non-Steam game." This is not recommended because Steam makes it difficult to run uMod and Toolbox in the same wine prefix, and very painful to install DirectSong. See Part 15.)
 - Proton, outside Steam. It is possible to run Proton, or wine with Proton-like modifications outside of Steam. In the past, this was recommended for maximum performance. Unfortunately, this is not a viable option anymore due to a Guild Wars bug. In the past year or so, the universe of "Proton without Steam" has condensed into [umu](https://github.com/Open-Wine-Components). Running under umu, Guild Wars incorrectly detects it's running under Steam, attempts to initialize the Steam API, then crashes when SteamAPI_Init() fails. If you want to run Guild Wars using "protonfied" wine, the only option at present is to use an old version, like the [last build of Wine-GE](https://github.com/GloriousEggroll/wine-ge-custom/releases/tag/GE-Proton8-26).
 
 It is possible to have more than one version of wine present on your system. By default, whichever version is installed as `/usr/bin/wine` is what will run when the `wine` command is invoked. Usually this will be "official" wine (or "distro" wine). Since that's the recommended version, **simply invoking `wine` yields the correct result for most people**. If you want to run a version of wine other than the one at `/usr/bin/wine`, you can do that via environment variables, like so:
@@ -301,8 +301,11 @@ To test that DirectSong is working, start Guild Wars, wait until the login scree
 
 Since it may fail silently, you should also test that wma decoding is working. (If it's not working, DirectSong shows the gold icon, but skips wma files.) To test this, edit `~/.wine-gw/drive_c/DirectSong/Guild Wars/GuildWars.ds`. Find the line that starts with "loginen" and copy/paste some distinctive wma file to the start of that list. When you start Guild Wars, that wma file should be the first thing played on the login screen.
 
-#### (Painful) Alternative Method for Proton:
-Proton bundles its own gstreamer that can't decode wma. To work around this, you need to install Windows Media Player 11. This is a *large* pain in the arse. So much so that you should probably strongly consider just using a non-Proton version of wine rather than proceeding with these instructions. Note that these instructions only work for Proton (and protonified wine) outside of Steam; I still have not figured out wma decoding inside Steam.
+#### (Painful) Alternative Method for Proton Inside Steam:
+See Part 15.
+
+#### (Painful) Alternative Method for Proton Outside Steam:
+Proton bundles its own gstreamer that can't decode wma. To work around this, you need to install Windows Media Player 11. This is a *large* pain in the arse. So much so that you should probably strongly consider just using a non-Proton version of wine rather than proceeding with these instructions.
 - Use `winecfg` to set the Windows version to WinXP.
 - Use `winetricks` to install `wmp11`.
 - Use `winecfg` to set the Windows version to Win2003. (This is the only way to pass the validation screen.)
@@ -508,13 +511,24 @@ GW Launcher will attempt to inject any dll files you put in its "plugins" direct
 
 ## Part 15: Solving Steam Headaches
 
-As noted in Part 3, running Guild Wars inside Steam is ***not*** recommended because it makes it difficult to install and use many of the add-ons covered in this guide, particularly uMod and Toolbox. This section explains how to work around most of those difficulties. Presently, with enough effort, most add-ons can be made to work inside Steam, except that DirectSong can't play wma files and Toolbox is flakey.
+As noted in Part 3, running Guild Wars inside Steam is ***not*** recommended because it makes it difficult to install and use many of the add-ons covered in this guide. However, in some circumstances (e.g., Steam Deck), you might nevertheless really, really want to do that. This section explains how to work around those difficulties.
 
 #### Adding Guild Wars to Steam
-In the lower left corner of Steam's "Library" view, select "Add a Game," and then "Add a Non-Steam Game," then browse for wherever `Gw.exe` is located and select it. In the "Properties" menu "Shortcut" tab, set "START IN" equal to the directory containing `Gw.exe`.  In the "Properties" menu "Compatibility" tab, set it to use whatever version of Proton you like.
+In the lower left corner of Steam's "Library" view, select "Add a Game," and then "Add a Non-Steam Game," then browse for wherever `Gw.exe` is located and select it.
+
+The fields in the "Properties" menu "Shortcut" tab should auto-populate. Change the name to exactly "Guild Wars" to gain access to community controller layouts and such.
+
+In the "Properties" menu "Compatibility" tab, set it to use whatever version of Proton you like.
+
+Something important to note: When you add a non-Steam game to Steam, Steam creates a more-or-less copy of its wine prefix at `<steam directory>/steamapps/compatdata/<random numbers>/pfx`. (`<steam directory`> is probably `~/.steam/steam`, but it varies by distro and when you fist installed Steam.) When you launch Guild Wars via Steam, *this* is the wine prefix being used. This has several consequences of note:
+- All the add-ons (Toolbox, DirectSong, etc.) need to be installed into this new prefix.
+- `winecfg` needs to be invoked for this prefix.
+- The original wine prefix isn't used anymore, and you can even delete everything except for the Guild Wars directory.
+- When you launch Guild Wars, the working directory from Windows' point of view is way the heck off in the Z:\ drive, several layers deep, likely behind a path name that's a pain to work with. To make life easier, symlink the Guild Wars directory into `Program Files (x86)` in the new prefix.
+- Because Steam manages this prefix, and might decide to delete it without warning you, you should symlink anything you care about keeping (e.g., DirectSong music) rather than actually putting it inside the prefix.
 
 #### Running Arbitrary Commands in Steam
-The cause of most Steam-related headaches is that `Gw.exe` is the *only* command Steam wants to run in that wine prefix. You need to bypass this behavior in order to install or use add-ons. There are two way to do this: First, some add-ons can be fully installed using your default version of wine before handing the prefix over to Steam. Second, you can use bash string manipulation to make Steam run an arbitrary command in place of `Gw.exe`.
+The cause of most Steam-related headaches is that `Gw.exe` is the *only* command Steam wants to run in that wine prefix. You need to bypass this behavior in order to install or use add-ons. You can use bash string manipulation to make Steam run an arbitrary command in place of `Gw.exe`.
 
 To run arbitrary commands in Steam, first download and save `steamarbitrarycommand.sh` from this repo's "extras" directory. Now in the "Properties" menu "Shortcut" tab, set "LAUNCH OPTIONS" to `{path_to_script}/steamarbitrarycommand.sh %command% --run {real_command}` where `real_command` is the command you want run instead of `Gw.exe.` (Credit: This script came from [here](https://steamcommunity.com/app/221410/discussions/0/3731826842455660050/#c3731826842456351164).)
 
@@ -526,14 +540,14 @@ A secondary cause of headaches with Steam is that it only wants to run *one comm
 Example .bat script:
 ```
 echo off
-cd ..
-cd uMod
+cd /D "C:\Program Files (x86)\uMod"
 start uMod.exe
 ping -n 3 127.0.0.1 > nul
+REM need to symlink GW directory so that it exists here in the prefix
 cd ..
 cd "Guild Wars"
 start Gw.exe
-ping -n 3 127.0.0.1 > nul
+ping -n 5 127.0.0.1 > nul
 cd ..
 cd GWToolbox
 start GWToolbox.exe
@@ -541,19 +555,27 @@ start GWToolbox.exe
 
 What is `ping` doing there? Proton doesn't have `timeout`; `ping` works as a substitute because it sends pings one second apart, so the duration is about `-n` minus 1 seconds. (127.0.0.1 is the local loopback address, i.e., yourself.)
 
+You can download a sample `steamlauncher.bat` from the "extras" directory of this repo.
+
 (As an alternative, [steamtinkerlaunch](https://github.com/sonic2kk/steamtinkerlaunch) might also be able to do some of the arbitrary/multiple command things a "full bells and whistles" Guild Wars needs.)
 
+#### Protontricks
+[Protontricks](https://github.com/Matoking/protontricks) is a wrapper around winetricks that makes it easier to install Windows components and such into Steam's wine prefixes. You will need this to get DirectSong working. It also offers an easy way to invoke `winecfg` for the prefix. 
+
+
 #### DXVK in Steam
-Do not set up DXVK manually if running Guild Wars under Steam. Steam swaps around symlinks for DirectX dlls at launch time depending on the run options you select. DXVK is used by default. See Part 5 for more information.
+Do not install DXVK manually if running Guild Wars under Steam. Steam swaps around symlinks for DirectX dlls at launch time depending on the run options you select. DXVK is used by default. If using a `dxvk.conf` file, place it in the Guild Wars directory. See Part 5 for more information.
 
 #### ESYNC/FSYNC in Steam
 Steam enables FSYNC by default, and ESYNC by default if FSYNC is disabled or unsupported by your kernel. If you want to turn them off, set the environment variables `PROTON_NO_FSYNC=1` and/or `PROTON_NO_ESYNC=1`. See Part 6 for more information.
 
 #### TexMod in Steam
-Use `steamarbitrarycommand.sh` to launch TexMod in place of `Gw.exe`, then launch Guild Wars from inside TexMod.  See Part 7 for more information.
+Extract TexMod into Steam's Guild Wars wine prefix at `<steam directory>/steamapps/compatdata/<random numbers>/pfx/drive_c/Program Files (x86)/TexMod`. Use `steamarbitrarycommand.sh` to launch TexMod in place of `Gw.exe`, then launch Guild Wars from inside TexMod.  See Part 7 for more information.
 
 #### uMod in Steam
-If you want to launch Guild Wars from inside uMod, use `steamarbitrarycommand.sh` to launch uMod in place of `Gw.exe`.  See Part 7 for more information.
+Extract uMod into Steam's Guild Wars wine prefix at `<steam directory>/steamapps/compatdata/<random numbers>/pfx/drive_c/Program Files (x86)/uMod`.
+
+If you want to launch Guild Wars from inside uMod, use `steamarbitrarycommand.sh` to launch uMod in place of `Gw.exe`. See Part 7 for more information.
 
 If you want to use the dll hook, copy `d3d9.dll` from uMod's directory to Guild Wars' directory, and use `steamarbitrarycommand.sh` to launch a .bat script that starts uMod, sleeps for a moment, then launches Guild Wars. See the example .bat file above.  See Part 7 for more information.
 
@@ -561,34 +583,32 @@ If you want to use the dll hook, copy `d3d9.dll` from uMod's directory to Guild 
 Just rename `gmod.dll` to `d3d9.dll` and place it in Guild Wars' directory. See Part 7 for more information.
 
 #### DirectSong in Steam
-Only partially functional. There is no wma playback. Proton uses its own bundled gstreamer plugins rather than your system libraries, and they do not seem to able to decode wma. Might work in a future version of Proton. Might be able to work around this by installing Windows Media Player 11 -- although that is really miserable.
-
-Use `steamarbitrarycommand.sh` to run `cmd` to run `RegisterDirectSongDirectory.exe`. It will use a roundabout Z:\ path rather than a shorter C:\ one. And, strangely, this works. Changing it to the equivalent C: path doesn't work.
-
-Use `steamarbitrarycommand.sh` to run `winecfg` to set the dll overrides. Or set them using default wine before handing the prefix over to Steam.
+Getting DirectSong working with Steam is a major headache. Proton uses its own bundled gstreamer plugins rather than your system libraries, and they are not able to decode wma files. So you need to install Windows Media Player 11 inside Steam's Guild Wars wine prefix:
+- Install [protontricks](https://github.com/Matoking/protontricks). You will need it.
+- Use either `protontricks` or `steamarbitrarycommand.sh` to invoke `winecfg` and set the Windows version to WinXP.
+- Use `protontricks` to install `wmp11`.
+- Use either `protontricks` or `steamarbitrarycommand.sh` to invoke `winecfg` and set the Windows version to Win2003.
+- Use `steamarbitrarycommand.sh` to invoke `cmd`. Inside `cmd`, navigate to `C:\Program Files (x86)\Windows Media Player` and run `setup_wm.exe`. It will crash on the third screen; that's OK.
+- Use either `protontricks` or `steamarbitrarycommand.sh` to invoke `winecfg` and set the Windows version back to whatever you started with (probably Win10).
+- Symlink the DirectSong directory into Steam's Guild Wars wine prefix at `<steam directory>/steamapps/compatdata/<random numbers>/pfx/drive_c/DirectSong`. (Use a symlink so that you don't lose a gigabyte of music files if Steam decides to delete the prefix without warning.)
+- Use `steamarbitrarycommand.sh` to invoke `cmd`. Inside `cmd`, navigate to `C:\DirectSong` and run `RegisterDirectSongDirectory.exe`.
 
 See Part 8 for more information.
 
 #### DSOAL-GW1 in Steam
-Use `steamarbitrarycommand.sh` to run `winecfg` to set the dll override found `dsound`. Or set it using default wine before handing the prefix over to Steam.
-
-Use `steamuser`'s user directory for the OpenAL config files. 
+The installation is the same as outside of Steam, bearing in mind that the wine prefix is now `<steam directory>/steamapps/compatdata/<random numbers>/pfx`. Put `dsound.dll` and `dsoal-aldrv.dll` in the Guild Wars directory. Use either `protontricks` or `steamarbitrarycommand.sh` to invoke `winecfg` to set the dll override for `dsound`. Put the assorted OpenAL files in `<steam directory>/steamapps/compatdata/<random numbers>/pfx/users/steamuser/AppData/Roaming/openal`. Run Guild Wars once with `-dsound` to make the boxes in the in-game sound menu accessible. See Part 9 for more information.
 
 Proton does not pass along the environment variables that tell DSOAL-GW and ALSOFT to log to files. If you want to turn on logging to check that everything is working, use `steamarbitrarycommand.sh` to run `cmd`, then use `SET DSOAL_LOGLEVEL=2` etc. and run `Gw.exe` from inside `cmd`. 
 
-See Part 9 for more information.
-
 #### Toolbox in Steam
 
-Toolbox can be made to work in Steam, but it's flakey.
+Installing Toolbox inside Steam entails a few extra headaches:
+- Download `GWToolbox.exe` into Steam's Guild Wars wine prefix at `<steam directory>/steamapps/compatdata/<random numbers>/pfx/drive_c/Program Files (x86)/GWToolbox`.
+- Use `steamarbitrarycommand.sh` to launch a bat file that starts Guild Wars, sleeps for a few seconds, then starts Toolbox. See the example above.
+- Toolbox will create a directory at `<steam directory>/steamapps/compatdata/<random numbers>/pfx/drive_c/users/steamuser/Documents/GWToolboxpp` and try to download `GWToolboxdll.dll` into it and it will **fail**. You must [manually download the dll file from Toolbox's github](https://github.com/gwdevhub/GWToolboxpp/releases) and put it there. It seems that Toolbox somehow lacks permissions to create that file. Fortunately, it is able to execute it, and also overwrite it when Toolbox updates.
+- Try your bat file again. It should work now.
 
-Run `winecfg` (either via `steamarbitrarycommand.sh` or before handing the prefix over to Steam) to disable desktop integration so that the Documents directory is not a symlink to your Linux user's Documents directory. Steam's containerization makes this directory inaccessible, causing Toolbox to fail.
-
-Now it should be possible to run Toolbox and Guild Wars simultaneously by using `steamarbitrarycommand.sh` to run a .bat script to launch both.
-
-Toolbox is now able to create and mostly populate its installation directory at `~/.steam/steam/steamapps/compatdata/{random_ numbers}/pfx/drive_c/users/steamuser/Documents/GWToolboxpp/`. However, for some reason, Toolbox is not able to save GWToolboxdll.dll to that directory. Quite strangely, it will download the dll to *somewhere*, and it will inject it, and Toolbox will work in-game; but it won't save it. Consequently, Toolbox will prompt to "install" every time it's run. You can work around this by manually placing the file in that directory. You will probably have to manually replace the file whenever Toolbox has an update.
-
-Don't use the `/quiet` parameter. It sometimes causes Guild Wars to black screen and hang. (This is probably a timing issue. Maybe fixable by increasing the delay before starting Toolbox.)
+Toolbox's `/quiet` parameter is a bit flakey inside Steam. It sometimes causes Guild Wars to black screen and hang. If this happens to you, try changing the delay before starting Toolbox, or just don't use `/quiet`.
 
 See Part 10 for more information.
 
