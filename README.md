@@ -7,17 +7,18 @@
 - **[Part 2: Setting Up 32-Bit Support](#part-2-setting-up-32-bit-support)**
 - **[Part 3: Choosing a Wine Version](#part-3-choosing-a-wine-version)**
 - **[Part 4: Basic Guild Wars Installation](#part-4-basic-guild-wars-installation)**
-- **[Part 5: DXVK](#part-5-dxvk)**
-- **[Part 6: ESYNC/FSYNC/NTSYNC](#part-6-esyncfsyncntsync)**
-- **[Part 7: TexMod/uMod/gMod](#part-7-texmodumodgmod)**
-- **[Part 8: DirectSong](#part-8-directsong)**
-- **[Part 9: DSOAL-GW1](#part-9-dsoal-gw1)**
-- **[Part 10: Toolbox](#part-10-toolbox)**
-- **[Part 11: Chat Filter](#part-11-chat-filter)**
-- **[Part 12: 4K UI Fixes](#part-12-4k-ui-fixes)**
-- **[Part 13: paw\*ned2](#part-13-pawned2)**
-- **[Part 14: Multiboxing](#part-14-multiboxing)**
-- **[Part 15: Solving Steam Headaches](#part-15-solving-steam-headaches)**
+- **[Part 5: FPS Control](#fps-control)**
+- **[Part 6: DXVK](#part-6-dxvk)**
+- **[Part 7: ESYNC/FSYNC/NTSYNC](#part-7-esyncfsyncntsync)**
+- **[Part 8: TexMod/uMod/gMod](#part-8-texmodumodgmod)**
+- **[Part 9: DirectSong](#part-9-directsong)**
+- **[Part 10: DSOAL-GW1](#part-10-dsoal-gw1)**
+- **[Part 11: Toolbox](#part-11-toolbox)**
+- **[Part 12: Chat Filter](#part-12-chat-filter)**
+- **[Part 13: 4K UI Fixes](#part-13-4k-ui-fixes)**
+- **[Part 14: paw\*ned2](#part-14-pawned2)**
+- **[Part 15: Multiboxing](#part-15-multiboxing)**
+- **[Part 16: Solving Steam Headaches](#part-16-solving-steam-headaches)**
 
 
 ## Part 0: About This Guide
@@ -43,7 +44,7 @@ This guide presents environment variables in a mix-and-match style. For one-off 
 
 After Guild Wars is fully set up, you will want to make a bash script to set all your environment variables and reduce everything to one click, then modify your Guild Wars desktop file to invoke your script.
 
-Example script: start uMod and Guild Wars, then inject Toolbox (using ESYNC and dll hook for uMod):
+Example script: start uMod and Guild Wars, then inject Toolbox (using ESYNC and dll hook for uMod, with fps limit increased to 144):
 ```
 #!/bin/bash
 
@@ -53,7 +54,7 @@ export WINEESYNC=1
 
 wine start /d "C:\Program Files (x86)\uMod" "C:\Program Files (x86)\uMod\uMod.exe" &
 sleep 1
-wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe" &
+wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe" -fps 144 &
 sleep 1
 wine start /d "C:\Program Files (x86)\GWToolbox" "C:\Program Files (x86)\GWToolbox\GWToolbox.exe" /quiet
 ```
@@ -99,19 +100,19 @@ Many forks of wine exist, giving you many options you could use to run Guild War
 
 #### Recommended, Official Wine Staging:
 
-This guide presently recommends `wine-staging` from the official repo at WineHQ. This is simple to set up, and offers similar performance to any other option, after setting up DXVK (see Part 5) and ESYNC (see Part 6).
+This guide presently recommends `wine-staging` from the official repo at WineHQ. This is simple to set up, and offers similar performance to any other option, after setting up DXVK (see Part 6) and ESYNC (see Part 7).
 
 To install Wine and its dependencies, follow [the instructions at WineHQ](https://wiki.winehq.org/Download). If you choose to use a different version of wine that comes as unpackaged binaries, install this anyway to get the dependencies.
 
-`wine-staging` is specifically recommended (as opposed to `wine-stable` or `wine-devel`) because it supports ESYNC. (See Part 6.)
+`wine-staging` is specifically recommended (as opposed to `wine-stable` or `wine-devel`) because it supports ESYNC. (See Part 7.)
 
-This recommendation may change in the relatively near future when NTSYNC becomes available. It is expected that that NTSYNC will eventually find its way into all three wine branches (stable, devel, and staging), and that ESYNC will be removed. There may be a transitional period where a TkG build may be recommended to retain access to ESYNC/FSYNC if you don't have a new enough kernel for NTSYNC. (See Part 6.)
+This recommendation may change in the relatively near future when NTSYNC becomes available. It is expected that that NTSYNC will eventually find its way into all three wine branches (stable, devel, and staging), and that ESYNC will be removed. There may be a transitional period where a TkG build may be recommended to retain access to ESYNC/FSYNC if you don't have a new enough kernel for NTSYNC. (See Part 7.)
 
 #### Other Options:
 
 - "Distro" wine. Wine packaged by your Linux distribution. This is almost always an outdated version of official wine. There's pretty much no reason to ever use this. Reconfigure your package manager to use the official repo for wine.
-- "TkG" wine. A custom build of wine that usually has the "staging" patches, plus a few other popular patches. For example, [Kron4ek's TkG builds](https://github.com/Kron4ek/Wine-Builds). The main selling point over official `wine-staging` is FSYNC. (See Part 6.)
-- Proton, inside Steam. A version of wine made by Valve for Steam featuring gaming/performance modifications. It is possible to add Guild Wars to Steam as a "non-Steam game." This is not recommended because Steam makes it difficult to run uMod and Toolbox in the same wine prefix, and very painful to install DirectSong. (See Part 15.)
+- "TkG" wine. A custom build of wine that usually has the "staging" patches, plus a few other popular patches. For example, [Kron4ek's TkG builds](https://github.com/Kron4ek/Wine-Builds). The main selling point over official `wine-staging` is FSYNC. (See Part 7.)
+- Proton, inside Steam. A version of wine made by Valve for Steam featuring gaming/performance modifications. It is possible to add Guild Wars to Steam as a "non-Steam game." This is not recommended because Steam makes it difficult to run uMod and Toolbox in the same wine prefix, and very painful to install DirectSong. (See Part 16.)
 - Proton, outside Steam. It is possible to run Proton, or wine with Proton-like modifications outside of Steam. In the past, this was recommended for maximum performance. However, Proton outside Steam is no longer recommended due to a showstopping Guild Wars bug, and also because it's very painful to install DirectSong. In the past year or so, the universe of "Proton without Steam" has mostly condensed into [umu](https://github.com/Open-Wine-Components). Unfortunately, when running under umu, Guild Wars incorrectly detects that it's running under Steam, attempts to initialize the Steam API, then crashes when SteamAPI_Init() fails. This leaves few working options for "Proton outside Steam": You can use the outdated [last build of Wine-GE](https://github.com/GloriousEggroll/wine-ge-custom/releases/tag/GE-Proton8-26) from 2/2024, or [Kron4ek's Proton builds](https://github.com/Kron4ek/Wine-Builds) which do *not* use the Steam Runtime.
 
 It is possible to have more than one version of wine present on your system. By default, whichever version is installed as `/usr/bin/wine` is what will run when the `wine` command is invoked. Usually this will be "official" wine (or "distro" wine). Since that's the recommended version, **simply invoking `wine` yields the correct result for most people**. If you want to run a version of wine other than the one at `/usr/bin/wine`, you can do that via environment variables, like so:
@@ -163,8 +164,16 @@ ln -s ~/Documents/Guild\ Wars/Templates/ ~/.wine-gw/drive_c/Program\ Files\ \(x8
 ln -s ~/Documents/Guild\ Wars/Screens/ ~/.wine-gw/drive_c/Program\ Files\ \(x86\)/Guild\ Wars/Screens
 ```
 
+## Part 5: FPS Control
+Recent Guild Wars updates fixed a serious bug by imposing a conservative fps limit. However, you may wish to override this limit if you have a high-refresh-rate monitor or want to use mailbox present mode (a/k/a "fast vsync") with a 60Hz monitor (see Part 6). To change the FPS limit, run Gw.exe with the `-fps <number>` command line parameter. Like so:
+```
+wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe" -fps 144
+```
+When launching Gw.exe via another program, such as uMod, Steam, GW Launcher, or Injectory, there should be an option for passing line parameters to Gw.exe.
 
-## Part 5: DXVK
+**Background Information:** Historically Guild Wars has suffered from a bug where, at very high framerates, players/heroes/henchmen/monsters/minipets/NPCs will appear to "teleport" from one place to another without visibly walking through the space in between. This issue is caused in part by threading issues in the client (letting the graphics loop run full tilt starves the network loop of CPU) and in part by the client's game world logic simulation running too far ahead of the server's and going out of sync. A 190 fps limit was added in the 4/15/2025 patch, and, when that proved insufficient, the limit was lowered to 90 fps in the 4/29/2025 patch. The point where problems begin to appear seems to vary with hardware (and probably geographic location). Historically many uses have reported 144 as the highest "safe" fps, but some uses have encounted problems at lower fps, and some users have run (much) higher fps with no problems. 
+
+## Part 6: DXVK
 
 [DXVK](https://github.com/doitsujin/dxvk) is a translation layer from Direct3D 8/9/10/11 to Vulkan. It offers a *tremendous* performance increase over wine's default DirectX-to-OpenGL translation. It also offers some graphical enhancements (see below) and enables/improves compatibility with various Vulkan-related things like [gamescope](https://github.com/ValveSoftware/gamescope), [MangoHUD](https://github.com/flightlessmango/MangoHud), and [vkBasalt](https://github.com/DadSchoorse/vkbasalt).
 
@@ -190,15 +199,12 @@ DXVK_HUD=1 wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (
 #### Bonus 1: Super Antialiasing
 If you have a powerful graphics card, DXVK can provide some graphical enhancements. Place `dxvk.conf` from the "extras" directory of this repo into your Guild Wars installation directory. With this DXVK config, if you turn on antialiasing via Guild Wars' in-game menu, DXVK will override it to 16x MSAA, with per-sample (rather than per pixel) shading. This noticeably improves the appearance of foliage, and also player armor with "frills" like several Vabbian sets. (If 16x proves too much for your graphics card, try 8x, or lower other settings. Even the most powerful cards available as of 2025 struggle with the combination of 4K, triple-digit monitor refresh rates, and 16x per-sample anti-aliasing during in-game combat. However, any two of those should be achievable on a broad cross-section of recent hardware. E.g., 4K/60Hz/16x or 4K/120+Hz/8x or 1080p/120+Hz/16x.)
 
-#### Bonus 2: Workaround for the "High FPS Teleport" Bug
-Guild Wars suffers from a bug where, at very high framerates, players/heroes/henchmen/monsters/minipets/NPCs will appear to "teleport" from one place to another without visibly walking through the space in between. This bug can be avoided by reducing the framerate. DXVK provides an easy way to limit Guild Wars' framerate without otherwise impacting your system. If you suffer from this bug, place `dxvk.conf` from the "extras" directory of this repo into your Guild Wars installation directory, and remove the `#` from the `d3d9.maxFrameRate` line. The framerate at which the bug kicks in seems to be hardware dependent, so you may need to experiment. Many people report 144 as the highest framerate they can reach without encountering the bug. (Optionally, use `#`s to disable the antialiasing stuff in `dxvk.conf` if you don't want it.)
-
-#### Bonus 3: Mailbox Present Mode (a/k/a "Fast VSync")
-DXVK can replace Guild Wars' built-in vsync with mailbox present mode, an alternative implementation of vsync that gives the lowest possible frame latency without tearing. Mailbox present mode is recommended if your average framerate is at least 2x your monitor's refresh rate. At lower framerate-to-refresh-rate ratios, mailbox present mode tends to have noticeably juttery motion due to uneven frame latency. Since you will likely have to limit your framerate somewhere around 144 to avoid the "high FPS teleport" bug, mailbox present mode is really great for people with 60Hz monitors, but probably not desirable for high-refresh-rate monitors. To enable mailbox present mode, place `dxvk.conf` from the "extras" directory of this repo into your Guild Wars installation directory, remove the `#` from the `dxvk.tearFree` line, and disable native vsync in Guild Wars' in-game options. (You should probably also remove the `#` from the `d3d9.maxFrameRate` line. See above. Optionally, use `#`s to disable the antialiasing stuff if you don't want it.) **Note:** Not all GPUs/drivers support mailbox present mode. To check if your system supports it, download the [Vulkan Hardware Capability Viewer](https://www.vulkan.gpuinfo.org/download.php) and check if "MAILBOX" is present under "Surface" > "Present Modes".
+#### Bonus 2: Mailbox Present Mode (a/k/a "Fast VSync")
+DXVK can replace Guild Wars' built-in vsync with mailbox present mode, an alternative implementation of vsync that gives the lowest possible frame latency without tearing. Mailbox present mode is highly recommended if you have a 60Hz monitor and your GPU can reliably exceed 120 fps. (At framerate-to-refresh-rate ratios lower than 2x, mailbox present mode is not recommened because it tends to have noticeably juttery motion due to uneven frame latency.) To enable mailbox present mode, place `dxvk.conf` from the "extras" directory of this repo into your Guild Wars installation directory, remove the `#` from the `dxvk.tearFree` line, run Guild Wars with the `-fps <number>` parameter at least twice your monitor refresh rate, and disable native vsync in Guild Wars' in-game options. (Optionally, use `#`s to disable the antialiasing stuff in dxvk.conf if you don't want it.) **Note:** Not all GPUs/drivers support mailbox present mode. To check if your system supports it, download the [Vulkan Hardware Capability Viewer](https://www.vulkan.gpuinfo.org/download.php) and check if "MAILBOX" is present under "Surface" > "Present Modes".
 
 
 
-## Part 6: ESYNC/FSYNC/NTSYNC
+## Part 7: ESYNC/FSYNC/NTSYNC
 
 ESYNC and FSYNC are alternative implementations for simulating Windows' thread synchronization that yield a significant performance increase for most games. (They also crash a small minority of games, but Guild Wars is not among them.) ESYNC and FSYNC have roughly equal performance.
 
@@ -230,7 +236,7 @@ NTSYNC is a forthcoming successor to ESYNC and FSYNC. Performance will be simila
 This part of this guide will require substantial revisions when that happens. (Unfortunately, the next Debian stable release is about to freeze its kernel at 6.12. Which means the state of affairs where everyone can use NTSYNC is probably years away.)
 
 
-## Part 7: TexMod/uMod/gMod
+## Part 8: TexMod/uMod/gMod
 
 TexMod, uMod, and gMod are a family of utilities for replacing in-game textures. This enables graphical mods, such as removing the "frost" overlay from the skillbar, making UI elements translucent, spirit radar, etc. Of particular note is the famous [Cartography Made Easy mod](https://wiki.guildwars.com/wiki/Player-made_Modifications/Cartography_Index) that clearly shows which bits of fog can be removed for progress towards the cartography title. Files for TexMod and uMod can be found in the "extras" directory of this repo. gMod can be downloaded from [its github page](https://github.com/gwdevhub/gMod).
 
@@ -242,7 +248,7 @@ WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\TexMod" "C:\Program 
 
 #### uMod:
 uMod is an improved, open-source rewrite of TexMod from 2011. The version with best compatibility for Guild Wars is v1_r44. uMod is suitable for playing Guild Wars. However, if you want to make mods, its texture dumping interface doesn't work in Linux. No special installation is required. Simply extract the archive somewhere somewhere in the wine prefix. uMod offers two ways to "hook" Guild Wars.
-- First, you can simply run uMod, and then start Guild Wars via uMod's "Main -> Start game through uMod" menu option.
+- First, you can simply run uMod, and then start Guild Wars via uMod's "Main -> Start game through uMod" menu option. (Or use "Start game through uMod (with command line)" if you want to change the fps limit.)
 - Second, you can copy `d3d9.dll` from uMod's directory to Guild Wars' directory. Now if you start uMod first, and then start Guild Wars normally, uMod should "hook" Guild Wars. (Note: On some versions of wine, the dll load order seems to be inconsistent in some weird prefix dependent way. If this doesn't work, try making a fresh prefix, or try a different version of wine.)
 In either event:
 ```
@@ -252,7 +258,7 @@ WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\uMod" "C:\Program Fi
 #### gMod:
 gMod is a simplified continuation of uMod with ongoing development since 2023. gMod removes uMod's UI, on-the-fly texture loading/unloading/reloading, texture dumping, etc. in favor of once-at-launch configuration via a simple text file. Consequently, gMod is more performant than either TexMod or uMod. Unless you need uMod's ability to load and unload mods while Guild Wars is running, gMod is probably the best choice. gMod offers two ways to "hook" Guild Wars.
 - First, you can rename `gmod.dll` to `d3d9.dll` and place it in Guild Wars' directory. Then start Guild Wars normally. (Note: On some versions of wine, the dll load order seems to be inconsistent in some weird prefix dependent way. If this doesn't work, try making a fresh prefix, or try a different version of wine.)
-- Second, you can inject `gmod.dll` into the Guild Wars process before it loads `dxd9.dll`. gMod is integrated into GW Launcher (see Part 14), and also works with simple commandline injectors like [Injectory](https://github.com/blole/injectory). Which, assuming everything is in the Guild Wars directory, would work like this:
+- Second, you can inject `gmod.dll` into the Guild Wars process before it loads `dxd9.dll`. gMod is integrated into GW Launcher (see Part 15), and also works with simple commandline injectors like [Injectory](https://github.com/blole/injectory). Which, assuming everything is in the Guild Wars directory, would work like this:
 ```
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i gMod.dll
 ```
@@ -260,7 +266,7 @@ WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Prog
 Since gMod doesn't have a user interface, you need to use a text file to tell it which mods to load. Create `~/.wine-gw/drive_c/Program Files/Guild Wars/modlist.txt` and populate it with a list of mod files (uMod's tpf or zip format), one per line, by full Windows paths.
 
 
-## Part 8: DirectSong
+## Part 9: DirectSong
 
 DirectSong is the official add-on for playing collector's edition and bonus music in Guild Wars. It is now completely defunct, since it depends on ancient Windows libraries that have been obsolete since 2009, and Jeremy Soule has completely abandoned the project.
 
@@ -302,7 +308,7 @@ To test that DirectSong is working, start Guild Wars, wait until the login scree
 Since it may fail silently, you should also test that wma decoding is working. (If it's not working, DirectSong shows the gold icon, but skips wma files.) To test this, edit `~/.wine-gw/drive_c/DirectSong/Guild Wars/GuildWars.ds`. Find the line that starts with "loginen" and copy/paste some distinctive wma file to the start of that list. When you start Guild Wars, that wma file should be the first thing played on the login screen.
 
 #### (Painful) Alternative Method for Proton Inside Steam:
-See Part 15.
+See Part 16.
 
 #### (Painful) Alternative Method for Proton Outside Steam:
 Proton bundles its own gstreamer that can't decode wma. To work around this, you need to install Windows Media Player 11. This is a *large* pain in the arse. So much so that you should probably strongly consider just using a non-Proton version of wine rather than proceeding with these instructions.
@@ -321,7 +327,7 @@ Proton bundles its own gstreamer that can't decode wma. To work around this, you
 - Install DirectSong itself as described above.
 
 
-## Part 9: DSOAL-GW1
+## Part 10: DSOAL-GW1
 
 [DSOAL-GW1](https://github.com/ChthonVII/dsoal-GW1) is a fork a DSOAL that has been modified to work with Guild Wars. DSOAL is a DirectSound-to-OpenAL compatibility layer that is able to emulate DirectSound3D and EAX in software. Put simply, this makes it possible to activate GW’s “Use 3D Audio Hardware” and “Use EAX” options and to hear GW's sound effects as originally intended.
 
@@ -363,7 +369,7 @@ wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild 
 For further details, consult `DSOAL-GW1_readme.txt`.
 
 
-## Part 10: Toolbox
+## Part 11: Toolbox
 [GWToolbox++](https://www.gwtoolbox.com/) is a collection of several tools and QoL enhancements for Guild Wars. Toolbox had long been the subject of sometimes heated debate about its merits versus the risk of getting your account banned, when, in May 2024, A-Net unexpectedly [announced](https://wiki.guildwars.com/wiki/Feedback:Game_updates/20240514) that toolbox is permitted for PvE. Even if you never use its other features, Toolbox is an absolute must-have for the fast travel feature alone.
 
 Download the latest [Toolbox launcher](https://github.com/gwdevhub/GWToolboxpp/releases) to somewhere in the wine prefix and run it. For instance:
@@ -398,7 +404,7 @@ Injectory supports injecting multiple dlls at once, so you can do both gMod and 
 ```
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i gMod.dll -i "C:\users\<your username>\Documents\GWToolboxpp\GWToolboxdll.dll"
 ```
-Injectory also supports command line paramters for GW like so:
+Injectory also supports command line paramters, like `-fps <number>` for GW like so:
 
 ```
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i "C:\users\<your username>\Documents\GWToolboxpp\GWToolboxdll.dll" -a "-fps 144"
@@ -407,7 +413,7 @@ WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Prog
 **Note:** Following Guild Wars' major 4/15/2025 update, Guild Wars will often crash and hang with a black screen at the moment the Toolbox dll is injected, if you are using new wow64 mode for 32-bit support and inject while Guild Wars is already running. You have two options: (1) Use 32-bit system libraries instead of new wow64 mode for 32-bit support; or (2) use Injectory, GW Launcher, or similar to launch Gw.exe in a paused state and inject before it starts running.
 
 
-## Part 11: Chat Filter
+## Part 12: Chat Filter
 
 Install the community-maintained chat filter list to silence most of the obnoxious RMT spam in Kamadan:
 
@@ -419,7 +425,7 @@ ln -s ~/Documents/Guild\ Wars/ChatFilter.ini ~/.wine-gw/drive_c/Program\ Files\ 
 ```
 
 
-## Part 12: 4K UI Fixes
+## Part 13: 4K UI Fixes
 
 GW's UI was designed almost a decade before the first consumer 4K monitor was released. Even set to the largest size, the UI is painfully dinky at 4K. This section discusses solutions for getting a bigger UI with minimal loss of quality. If you don't use a 4K monitor, skip this section.
 
@@ -446,7 +452,7 @@ sudo apt-get install gamescope
      - gamescope 3.16 example: `WINEPREFIX=~/.wine-gw gamescope -w 2954 -h 1662 -W 3840 -H 2160 -F fsr --fsr-sharpness 3 -f -- wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe"`
 - To avoid confusing bash, it's usually necessary to put a -- after gamescope's parameters. Otherwise any parameters meant for the Windows program may be misinterpreted as additional parameters to gamescope. (See the examples above.)
 - Unlike a naked `wine start`, gamescope does not exit until GW exits. So, if you want to do things in a launcher script after starting GW, you'll need a `&` or `-- &`at the end of gamescope's line.
-- **Important!** Turn up in-game anti-aliasing to the max. (Or even use the 16x, per-sample "super antialising" described in Part 5.) A substantial part of the FSR algorithm is "reverse anti-aliasing" to recover the higher resolution image that was used for anti-aliasing.
+- **Important!** Turn up in-game anti-aliasing to the max. (Or even use the 16x, per-sample "super antialising" described in Part 6.) A substantial part of the FSR algorithm is "reverse anti-aliasing" to recover the higher resolution image that was used for anti-aliasing.
 - `--fsr-sharpness` ranges from 0 (sharpest) to 20 (smoothest). This is a matter of taste. The scale seems to be a little different depending on the version of gamescope. Also, the same sharpness setting gives different results depending on the game's antialiasing setting.
 - The choice of fake fullscreen resolution makes a trade off between UI size and graphical quality. 2954x1662 is what AMD recommends as "ultra quality." See [here](https://community.amd.com/t5/gaming/amd-fidelityfx-super-resolution-is-here/ba-p/477919) for more details.
 
@@ -471,7 +477,7 @@ An alternative solution is to use a version of wine with the "FSR fake resolutio
 Unfortunately, Wine-GE and Proton-GE have been discontinued in favor of umu, which, as explained above, does not work with Guild Wars. Also, the "FSR fake resolution patch" may not work correctly in wayland, depending on your wayland library versions.
 
 
-## Part 13: paw\*ned2
+## Part 14: paw\*ned2
 
 Paw\*ned2 is a build manager for Guild Wars.
 
@@ -494,7 +500,7 @@ Note: If you are using gamescope for Guild Wars, then install paw\*ned2 to a dif
 Note: Paw\*ned2 has terrible high dpi support.
 
 
-## Part 14: Multiboxing
+## Part 15: Multiboxing
 
 
 #### Multiple Wine Prefixes
@@ -513,10 +519,12 @@ Note: Since Toolbox settings/data are shared, it might be possible to clobber on
 - Use the "framework dependent" version of the exe file.
 - When creating a profile in GWLauncher, check the box for "run elevated."
 
-GW Launcher will attempt to inject any dll files you put in its "plugins" directory. This is one way to inject Toolbox. It will also inject its own copy of gMod if you put any tpf or zip files in the "plugins" directory. If you'd rather use uMod than gMod, then don't put any tpf or zip files in GW Launcher's "plugins" directory, and run uMod by renaming its dll as described in Part 7 or putting its dll in GW Launcher's "plugins" directory to be injected.
+GW Launcher will attempt to inject any dll files you put in its "plugins" directory. This is one way to inject Toolbox. It will also inject its own copy of gMod if you put any tpf or zip files in the "plugins" directory. If you'd rather use uMod than gMod, then don't put any tpf or zip files in GW Launcher's "plugins" directory, and run uMod by renaming its dll as described in Part 8 or putting its dll in GW Launcher's "plugins" directory to be injected.
+
+GW Launcher has an option to pass command line parameters, like `-fps <number>` to Gw.exe.
 
 
-## Part 15: Solving Steam Headaches
+## Part 16: Solving Steam Headaches
 
 As noted in Part 3, running Guild Wars inside Steam is ***not*** recommended because it makes it difficult to install and use many of the add-ons covered in this guide. However, in some circumstances (e.g., Steam Deck), you might nevertheless really, really want to do that. This section explains how to work around those difficulties.
 
@@ -526,6 +534,8 @@ In the lower left corner of Steam's "Library" view, select "Add a Game," and the
 The fields in the "Properties" menu "Shortcut" tab should auto-populate. Change the name to exactly "Guild Wars" to gain access to community controller layouts and such.
 
 In the "Properties" menu "Compatibility" tab, set it to use whatever version of Proton you like.
+
+In the "Properties" menu "Shortcut" tab, you can set "LAUNCH OPTIONS" to include command line parameters like `-fps <number`. However, if you end up using a script to launch uMod and/or Toolbox (see below), parameters would go inside that script instead.
 
 Something important to note: When you add a non-Steam game to Steam, Steam creates a more-or-less copy of its wine prefix at `{steam directory}/steamapps/compatdata/{random numbers}/pfx`. (`{steam directory`} is probably `~/.steam/steam`, but it varies by distro and when you fist installed Steam.) When you launch Guild Wars via Steam, *this* is the wine prefix being used. This has several consequences of note:
 - All the add-ons (Toolbox, DirectSong, etc.) need to be installed into this new prefix.
@@ -553,7 +563,7 @@ ping -n 3 127.0.0.1 > nul
 REM need to symlink GW directory so that it exists here in the prefix
 cd ..
 cd "Guild Wars"
-start Gw.exe
+start Gw.exe -fps 144
 ping -n 5 127.0.0.1 > nul
 cd ..
 cd GWToolbox
@@ -569,25 +579,24 @@ You can download a sample `steamlauncher.bat` from the "extras" directory of thi
 #### Protontricks
 [Protontricks](https://github.com/Matoking/protontricks) is a wrapper around winetricks that makes it easier to install Windows components and such into Steam's wine prefixes. You will need this to get DirectSong working. It also offers an easy way to invoke `winecfg` for the prefix. 
 
-
 #### DXVK in Steam
-Do not install DXVK manually if running Guild Wars under Steam. Steam swaps around symlinks for DirectX dlls at launch time depending on the run options you select. DXVK is used by default. If using a `dxvk.conf` file, place it in the Guild Wars directory. See Part 5 for more information.
+Do not install DXVK manually if running Guild Wars under Steam. Steam swaps around symlinks for DirectX dlls at launch time depending on the run options you select. DXVK is used by default. If using a `dxvk.conf` file, place it in the Guild Wars directory. See Part 6 for more information.
 
 #### ESYNC/FSYNC in Steam
-Steam enables FSYNC by default, and ESYNC by default if FSYNC is disabled or unsupported by your kernel. If you want to turn them off, set the environment variables `PROTON_NO_FSYNC=1` and/or `PROTON_NO_ESYNC=1`. See Part 6 for more information.
+Steam enables FSYNC by default, and ESYNC by default if FSYNC is disabled or unsupported by your kernel. If you want to turn them off, set the environment variables `PROTON_NO_FSYNC=1` and/or `PROTON_NO_ESYNC=1`. See Part 7 for more information.
 
 #### TexMod in Steam
-Extract TexMod into Steam's Guild Wars wine prefix at `{steam directory}/steamapps/compatdata/{random numbers}/pfx/drive_c/Program Files (x86)/TexMod`. Use `steamarbitrarycommand.sh` to launch TexMod in place of `Gw.exe`, then launch Guild Wars from inside TexMod.  See Part 7 for more information.
+Extract TexMod into Steam's Guild Wars wine prefix at `{steam directory}/steamapps/compatdata/{random numbers}/pfx/drive_c/Program Files (x86)/TexMod`. Use `steamarbitrarycommand.sh` to launch TexMod in place of `Gw.exe`, then launch Guild Wars from inside TexMod.  See Part 8 for more information.
 
 #### uMod in Steam
 Extract uMod into Steam's Guild Wars wine prefix at `{steam directory}/steamapps/compatdata/{random numbers}/pfx/drive_c/Program Files (x86)/uMod`.
 
-If you want to launch Guild Wars from inside uMod, use `steamarbitrarycommand.sh` to launch uMod in place of `Gw.exe`. See Part 7 for more information.
+If you want to launch Guild Wars from inside uMod, use `steamarbitrarycommand.sh` to launch uMod in place of `Gw.exe`. See Part 8 for more information.
 
-If you want to use the dll hook, copy `d3d9.dll` from uMod's directory to Guild Wars' directory, and use `steamarbitrarycommand.sh` to launch a .bat script that starts uMod, sleeps for a moment, then launches Guild Wars. See the example .bat file above.  See Part 7 for more information.
+If you want to use the dll hook, copy `d3d9.dll` from uMod's directory to Guild Wars' directory, and use `steamarbitrarycommand.sh` to launch a .bat script that starts uMod, sleeps for a moment, then launches Guild Wars. See the example .bat file above.  See Part 8 for more information.
 
 #### gMod in Steam
-Just rename `gmod.dll` to `d3d9.dll` and place it in Guild Wars' directory. See Part 7 for more information.
+Just rename `gmod.dll` to `d3d9.dll` and place it in Guild Wars' directory. See Part 8 for more information.
 
 #### DirectSong in Steam
 Getting DirectSong working with Steam is a major headache. Proton uses its own bundled gstreamer plugins rather than your system libraries, and they are not able to decode wma files. So you need to install Windows Media Player 11 inside Steam's Guild Wars wine prefix:
@@ -600,10 +609,10 @@ Getting DirectSong working with Steam is a major headache. Proton uses its own b
 - Symlink the DirectSong directory into Steam's Guild Wars wine prefix at `{steam directory}/steamapps/compatdata/{random numbers}/pfx/drive_c/DirectSong`. (Use a symlink so that you don't lose a gigabyte of music files if Steam decides to delete the prefix without warning.)
 - Use `steamarbitrarycommand.sh` to invoke `cmd`. Inside `cmd`, navigate to `C:\DirectSong` and run `RegisterDirectSongDirectory.exe`.
 
-See Part 8 for more information.
+See Part 9 for more information.
 
 #### DSOAL-GW1 in Steam
-The installation is the same as outside of Steam, bearing in mind that the wine prefix is now `{steam directory}/steamapps/compatdata/{random numbers}/pfx`. Put `dsound.dll` and `dsoal-aldrv.dll` in the Guild Wars directory. Use either `protontricks` or `steamarbitrarycommand.sh` to invoke `winecfg` to set the dll override for `dsound`. Put the assorted OpenAL files in `{steam directory}/steamapps/compatdata/{random numbers}/pfx/users/steamuser/AppData/Roaming/openal`. Run Guild Wars once with `-dsound` to make the boxes in the in-game sound menu accessible. See Part 9 for more information.
+The installation is the same as outside of Steam, bearing in mind that the wine prefix is now `{steam directory}/steamapps/compatdata/{random numbers}/pfx`. Put `dsound.dll` and `dsoal-aldrv.dll` in the Guild Wars directory. Use either `protontricks` or `steamarbitrarycommand.sh` to invoke `winecfg` to set the dll override for `dsound`. Put the assorted OpenAL files in `{steam directory}/steamapps/compatdata/{random numbers}/pfx/users/steamuser/AppData/Roaming/openal`. Run Guild Wars once with `-dsound` to make the boxes in the in-game sound menu accessible. See Part 10 for more information.
 
 Proton does not pass along the environment variables that tell DSOAL-GW and ALSOFT to log to files. If you want to turn on logging to check that everything is working, use `steamarbitrarycommand.sh` to run `cmd`, then use `SET DSOAL_LOGLEVEL=2` etc. and run `Gw.exe` from inside `cmd`. 
 
@@ -617,7 +626,7 @@ Installing Toolbox inside Steam entails a few extra headaches:
 
 Toolbox's `/quiet` parameter is a bit flakey inside Steam. It sometimes causes Guild Wars to black screen and hang. If this happens to you, try changing the delay before starting Toolbox, or just don't use `/quiet`.
 
-See Part 10 for more information.
+See Part 11 for more information.
 
 
 

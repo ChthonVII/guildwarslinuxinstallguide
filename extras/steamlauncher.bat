@@ -10,7 +10,7 @@ ping -n 3 127.0.0.1 > nul
 REM need to symlink GW directory so that it exists here in the prefix
 cd ..
 cd "Guild Wars"
-start Gw.exe
+start Gw.exe -fps 144
 
 REM echo "sleeping 5 sec"
 ping -n 5 127.0.0.1 > nul
