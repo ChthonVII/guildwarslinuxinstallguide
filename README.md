@@ -58,6 +58,7 @@ sleep 1
 wine start /d "C:\Program Files (x86)\GWToolbox" "C:\Program Files (x86)\GWToolbox\GWToolbox.exe" /quiet
 ```
 
+**Aside:** Wondering what a "wine prefix" is, but too timid to ask? A wine prefix is essentially a *name* for a particular emulated Windows computer. It also names the directory where the files for that particular emulated computer reside. In order for two programs -- say Guild Wars and Toolbox -- to be able to interact, they must be run within the same wine prefix. Conversely, programs running in independent wine prefixes -- say two copies of Guild Wars -- are oblivious to each other. Also, segregating programs into different wine prefixes allows for doing dll overrides and compatibility tweaks for the sake of one program without potentially breaking another. When you set the `WINEPREFIX` environment variable, you're telling wine which wine prefix -- which emulated Windows computer -- to run the command in. If the corresponding directory already exists, wine will use it; otherise, it will create it.
 
 ## Part 2: Setting Up 32-Bit Support
 
