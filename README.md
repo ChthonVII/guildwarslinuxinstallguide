@@ -43,12 +43,11 @@ This guide presents environment variables in a mix-and-match style. For one-off 
 
 After Guild Wars is fully set up, you will want to make a bash script to set all your environment variables and reduce everything to one click, then modify your Guild Wars desktop file to invoke your script.
 
-Example script: start uMod and Guild Wars, then inject Toolbox (using "new wow64 mode" for 32-bit support, ESYNC, and dll hook for uMod):
+Example script: start uMod and Guild Wars, then inject Toolbox (using ESYNC and dll hook for uMod):
 ```
 #!/bin/bash
 
 export WINEPREFIX=~/.wine-gw
-export WINEARCH=wow64
 export WINEDEBUG=-all
 export WINEESYNC=1
 
