@@ -389,7 +389,7 @@ sleep 1
 wine start /d "C:\Program Files (x86)\GWToolbox" "C:\Program Files (x86)\GWToolbox\GWToolbox.exe /quiet"
 ```
 
-It's also possible to inject the Toolbox dll with generic injection utilities like [injectory](https://github.com/blole/injectory) or [Injector](https://github.com/nefarius/Injector). A potentially useful feature of Injectory is the ability to launch Gw.exe in a paused state and inject before it starts running:
+It's also possible to inject the Toolbox dll with generic injection utilities like [Injectory](https://github.com/blole/injectory) or [Injector](https://github.com/nefarius/Injector). A potentially useful feature of Injectory is the ability to launch Gw.exe in a paused state and inject before it starts running:
 
 ```
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i "C:\users\<your username>\Documents\GWToolboxpp\GWToolboxdll.dll"
@@ -398,6 +398,13 @@ Injectory supports injecting multiple dlls at once, so you can do both gMod and 
 ```
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i gMod.dll -i "C:\users\<your username>\Documents\GWToolboxpp\GWToolboxdll.dll"
 ```
+Injectory also supports command line paramters for GW like so:
+
+```
+WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i "C:\users\<your username>\Documents\GWToolboxpp\GWToolboxdll.dll" -a "-fps 144"
+```
+
+**Note:** Following Guild Wars' major 4/15/2025 update, Guild Wars will often crash and hang with a black screen at the moment the Toolbox dll is injected, if you are using new wow64 mode for 32-bit support and inject while Guild Wars is already running. You have two options: (1) Use 32-bit system libraries instead of new wow64 mode for 32-bit support; or (2) use Injectory, GW Launcher, or similar to launch Gw.exe in a paused state and inject before it starts running.
 
 
 ## Part 11: Chat Filter
