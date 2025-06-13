@@ -202,7 +202,9 @@ If you have a powerful graphics card, DXVK can provide some graphical enhancemen
 #### Bonus 2: Mailbox Present Mode (a/k/a "Fast VSync")
 DXVK can replace Guild Wars' built-in vsync with mailbox present mode, an alternative implementation of vsync that gives the lowest possible frame latency without tearing. Mailbox present mode is highly recommended if you have a 60Hz monitor and your GPU can reliably exceed 120 fps. (At framerate-to-refresh-rate ratios lower than 2x, mailbox present mode is not recommened because it tends to have noticeably juttery motion due to uneven frame latency.) To enable mailbox present mode, place `dxvk.conf` from the "extras" directory of this repo into your Guild Wars installation directory, remove the `#` from the `dxvk.tearFree` line, run Guild Wars with the `-fps <number>` parameter at least twice your monitor refresh rate, and disable native vsync in Guild Wars' in-game options. (Optionally, use `#`s to disable the antialiasing stuff in dxvk.conf if you don't want it.) **Note:** Not all GPUs/drivers support mailbox present mode. To check if your system supports it, download the [Vulkan Hardware Capability Viewer](https://www.vulkan.gpuinfo.org/download.php) and check if "MAILBOX" is present under "Surface" > "Present Modes".
 
+**Note:** While DXVK gives a huge performance boost, Guild Wars still runs acceptably well on most systems without it.
 
+**Note:** For older hardware that lacks sufficient Vulkan support, Gallium Nine may serve as an alternative to DXVK. However, this may require running an old version of mesa, as Gallium Nine support in Mesa will soon be deprecated and removed.
 
 ## Part 7: ESYNC/FSYNC/NTSYNC
 
