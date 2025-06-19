@@ -38,7 +38,7 @@ The `WINEPREFIX` environment variable tells wine which prefix to use. You must s
 
 The `WINEARCH` environment variable tells wine what Windows architecture to simulate when first setting up a wine prefix. In the past, you needed a 32-bit wine prefix for Guild Wars if you wanted to set up DirectSong. That is no longer the case. Currently, it is advised to use a 64-bit wine prefix for forward compatibility with the "new wow64 mode" (see Part 2). To set up a 64-bit prefix, either leave `WINEARCH` unset when first creating the  wine prefix, or set it to `win64`. (On wine >= 10.2, `wow64` will also create a 64-bit prefix.)
 
-For wine >= 10.2, the `WINEARCH` environment variable is also used to tell wine to activate the "new wow64 mode" (see Part 2). To use the "new wow64 mode," you must specify `WINARCH=wow64` *every* time.
+For wine >= 10.2, the `WINEARCH` environment variable is also used to tell wine to activate the "new wow64 mode" (see Part 2). To use the "new wow64 mode," you must specify `WINEARCH=wow64` *every* time.
 
 This guide presents environment variables in a mix-and-match style. For one-off commands, environment variables are presented as part of the command, like so: `WINEPREFIX=~/.wine-gw some-command`. For a series of commands that will be executed in the same console window, environment variables are presented as export statements that set an environment variable for the lifetime of the console window, like so: `export WINEPREFIX=~/.wine-gw`. Unless context suggests otherwise, you should generally assume that all the instructions in a given part of this guide take place in the same console window, using the same exports.
 
@@ -91,7 +91,7 @@ Install Wine and its dependencies, both 64- and 32-bit, by following [the instru
 
 #### Option 2, New WOW64 Mode:
 
-If you have wine >= 10.2, you may use the "new wow64 mode" to run 32-bit Windows programs inside 64-bit Linux processes. In this case, you do not need any 32-bit Linux system libraries. To use the "new wow64 mode," you must set the environment variable `WINARCH=wow64` each time you invoke wine.
+If you have wine >= 10.2, you may use the "new wow64 mode" to run 32-bit Windows programs inside 64-bit Linux processes. In this case, you do not need any 32-bit Linux system libraries. To use the "new wow64 mode," you must set the environment variable `WINEARCH=wow64` each time you invoke wine.
 
 
 ## Part 3: Choosing a Wine Version
