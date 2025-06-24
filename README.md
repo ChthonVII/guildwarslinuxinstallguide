@@ -44,7 +44,7 @@ This guide presents environment variables in a mix-and-match style. For one-off 
 
 After Guild Wars is fully set up, you will want to make a bash script to set all your environment variables and reduce everything to one click, then modify your Guild Wars desktop file to invoke your script.
 
-Example script: start uMod and Guild Wars, then inject Toolbox (using ESYNC and dll hook for uMod, with fps limit increased to 144):
+Example script: start dhuum.sh, uMod, and Guild Wars, then inject Toolbox (using ESYNC and dll hook for uMod, with fps limit increased to 144):
 ```
 #!/bin/bash
 
@@ -52,12 +52,15 @@ export WINEPREFIX=~/.wine-gw
 export WINEDEBUG=-all
 export WINEESYNC=1
 
+bash dhuum.sh &
 wine start /d "C:\Program Files (x86)\uMod" "C:\Program Files (x86)\uMod\uMod.exe" &
 sleep 1
 wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe" -fps 144 &
 sleep 1
 wine start /d "C:\Program Files (x86)\GWToolbox" "C:\Program Files (x86)\GWToolbox\GWToolbox.exe" /quiet
 ```
+
+Sometimes Guild Wars may not exit cleanly, leaving behind a zombie process. You can use `dhuum.sh` from the "extras" directory of this repo to scan and kill `Gw.exe` if it becomes a zombie process, ensuring a clean exit. Download it into your Guild Wars installation directory and add it to your launcher script as shown in the example above.
 
 **Aside:** Wondering what a "wine prefix" is, but too timid to ask? A wine prefix is essentially a *name* for a particular emulated Windows computer. It also names the directory where the files for that particular emulated computer reside. When you set the `WINEPREFIX` environment variable, you're telling wine which wine prefix -- which emulated Windows computer -- to run the command in. If the corresponding directory already exists, wine will use it; otherise, it will create it. In order for two programs -- say Guild Wars and Toolbox -- to be able to interact, they must be run within the same wine prefix. Conversely, programs running in independent wine prefixes -- say two copies of Guild Wars -- are oblivious to each other. Also, segregating programs into different wine prefixes allows for doing dll overrides and compatibility tweaks for the sake of one program without potentially breaking another.
 
@@ -199,9 +202,9 @@ DXVK_HUD=1 wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (
 #### Graphical Enhancements via DXVK
 DXVK can override some aspects of Guild Wars' rendering behavior to provide graphical enhancments not otherwise available. Place `dxvk.conf` from the "extras" directory of this repo into your Guild Wars installation directory, and add or remove `#` marks at the start of lines to enable or disable each feature. See the comments in `dxvk.conf` for additional notes.
 - Override Guild Wars' maximum 8x antialiasing with 16x antialiasing (and anisotropic sampling). In-game antialiasing must be set to something other than "none."
-- Override Guild Wars' native per-pixel shading with per-sample shading. This noticeably improves the appearance of foliage, and also player armor with "frills" like several Vabbian sets. Note that per-sample shading softens edges that some users might prefer crisply aliased, especially on low resoluton/dpi monitors, such as the small in-game fonts. Very demanding on GPU.
+- Override Guild Wars' native per-pixel shading with per-sample shading. This noticeably improves the appearance of foliage, and also player armor with "frills" like several Vabbian sets, eliminating shimmer on the edges of fine details. Note that per-sample shading softens edges that some users might prefer crisply aliased, especially on low resoluton/dpi monitors, such as the small in-game fonts. This feature is *very* demanding on GPU.
 - Adjust LOD bias to increase texture detail/sharpness.
-- Override Guild Wars' native vsync with mailbox present mode, an alternative implementation of vsync that gives the lowest possible frame latency without tearing. Mailbox present mode is highly recommended if you have a 60Hz monitor and your GPU can reliably exceed 120 fps. (At framerate-to-refresh-rate ratios lower than 2x, mailbox present mode is not recommened because it tends to have noticeably juttery motion due to uneven frame latency.) You must run Guild Wars with the `-fps <number>` parameter to allow FPS over 90, and you must disable native vsync in Guild Wars' in-game options. **Note:** Not all GPUs/drivers support mailbox present mode. To check if your system supports it, download the [Vulkan Hardware Capability Viewer](https://www.vulkan.gpuinfo.org/download.php) and check if "MAILBOX" is present under "Surface" > "Present Modes".
+- Override Guild Wars' native vsync with mailbox present mode, an alternative implementation of vsync that gives the lowest possible frame latency without tearing. Mailbox present mode is highly recommended if you have a 60Hz monitor and your GPU can reliably exceed 120 fps. (At framerate-to-refresh-rate ratios lower than 2x, mailbox present mode is not recommended because it tends to have noticeably juttery motion due to uneven frame latency.) You must run Guild Wars with the `-fps <number>` parameter to allow FPS over 90, and you must disable native vsync in Guild Wars' in-game options. **Note:** Not all GPUs/drivers support mailbox present mode. To check if your system supports it, download the [Vulkan Hardware Capability Viewer](https://www.vulkan.gpuinfo.org/download.php) and check if "MAILBOX" is present under "Surface" > "Present Modes".
 
 #### Bonus 2: Mailbox Present Mode (a/k/a "Fast VSync")
 DXVK can replace Guild Wars' built-in vsync with mailbox present mode, an alternative implementation of vsync that gives the lowest possible frame latency without tearing. Mailbox present mode is highly recommended if you have a 60Hz monitor and your GPU can reliably exceed 120 fps. (At framerate-to-refresh-rate ratios lower than 2x, mailbox present mode is not recommened because it tends to have noticeably juttery motion due to uneven frame latency.) To enable mailbox present mode, place `dxvk.conf` from the "extras" directory of this repo into your Guild Wars installation directory, remove the `#` from the `dxvk.tearFree` line, run Guild Wars with the `-fps <number>` parameter at least twice your monitor refresh rate, and disable native vsync in Guild Wars' in-game options. (Optionally, use `#`s to disable the antialiasing stuff in dxvk.conf if you don't want it.) **Note:** Not all GPUs/drivers support mailbox present mode. To check if your system supports it, download the [Vulkan Hardware Capability Viewer](https://www.vulkan.gpuinfo.org/download.php) and check if "MAILBOX" is present under "Surface" > "Present Modes".
