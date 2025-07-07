@@ -103,7 +103,7 @@ Many forks of wine exist, giving you many options you could use to run Guild War
 
 #### Recommended, Official Wine Staging:
 
-This guide presently recommends `wine-staging` from the official repo at WineHQ. This is simple to set up, and offers similar performance to any other option, after setting up DXVK (see Part 6) and ESYNC (see Part 7).
+This guide presently recommends `wine-staging` from the official repo at WineHQ. This is simple to set up, and offers performance on par with any other option, after setting up DXVK (see Part 6) and ESYNC (see Part 7).
 
 To install Wine and its dependencies, follow [the instructions at WineHQ](https://wiki.winehq.org/Download). If you choose to use a different version of wine that comes as unpackaged binaries, install this anyway to get the dependencies.
 
