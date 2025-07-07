@@ -312,7 +312,7 @@ WINEPREFIX=~/.wine-gw wine regedit"
 
 To test that DirectSong is working, start Guild Wars, wait until the login screen music has been playing for a few seconds, press F11, and look for a gold DirectSong icon at the bottom of the sound menu.
 
-Since it may fail silently, you should also test that wma decoding is working. (If it's not working, DirectSong shows the gold icon, but skips wma files.) To test this, edit `~/.wine-gw/drive_c/DirectSong/Guild Wars/GuildWars.ds`. Find the line that starts with "loginen" and copy/paste some distinctive wma file to the start of that list. When you start Guild Wars, that wma file should be the first thing played on the login screen.
+Since it may fail silently, you should also test that wma decoding is working. (If it's not working, DirectSong shows the gold icon, but skips wma files.) To test this, edit `~/.wine-gw/drive_c/DirectSong/GuildWars.ds`. Find the line that starts with "loginen" and copy/paste some distinctive wma file to the start of that list. When you start Guild Wars, that wma file should be the first thing played on the login screen.
 
 #### (Painful) Alternative Method for Proton Inside Steam:
 See Part 16.
