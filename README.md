@@ -238,7 +238,7 @@ Testing: You should see "fsync: up and running." the console output when you run
 
 #### NTSYNC:
 
-NTSYNC is a forthcoming successor to ESYNC and FSYNC. Performance will be similar. The main difference is that, unlike ESYNC and FSYNC, NTSYNC is a fully correct reproduction of Windows' thread synchronization behavior. Accordingly, it is expected that NTSYNC will be merged into mainline wine, enabled by default, and ESYNC and FSYNC will be removed. NTSYNC requires kernel support that is expected to be merged in kernel 6.14.
+NTSYNC is a forthcoming successor to ESYNC and FSYNC. Performance will be similar. The main difference is that, unlike ESYNC and FSYNC, NTSYNC is a fully correct reproduction of Windows' thread synchronization behavior. Accordingly, it is expected that NTSYNC will be merged into mainline wine, enabled by default, and ESYNC and FSYNC will be removed. NTSYNC requires kernel support that was merged in kernel 6.14.
 
 This part of this guide will require substantial revisions when that happens. (Unfortunately, the next Debian stable release is about to freeze its kernel at 6.12. Which means the state of affairs where everyone can use NTSYNC is probably years away.)
 
