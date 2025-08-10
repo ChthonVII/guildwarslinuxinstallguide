@@ -398,7 +398,7 @@ The other option is to inject the Toolbox dll silently via a command-line tool. 
 export WINEPREFIX=~/.wine-gw
 {launch Guild Wars, maybe launch uMod first}
 sleep 1
-wine start /d "C:\Program Files (x86)\GWToolbox" "C:\Program Files (x86)\GWToolbox\GWToolbox.exe /quiet"
+wine start /d "C:\Program Files (x86)\GWToolbox" "C:\Program Files (x86)\GWToolbox\GWToolbox.exe" /quiet
 ```
 
 It's also possible to inject the Toolbox dll with generic injection utilities like [Injectory](https://github.com/blole/injectory) or [Injector](https://github.com/nefarius/Injector). A potentially useful feature of Injectory is the ability to launch `Gw.exe` in a paused state and inject before it starts running:
