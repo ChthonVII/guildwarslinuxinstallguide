@@ -124,7 +124,7 @@ export WINEVERPATH={top-level-wine-directory}
 export WINELOADER={top-level-wine-directory}/bin/wine
 export WINESERVER={top-level-wine-directory}/bin/wineserver
 export WINEDLLPATH={top-level-wine-directory}/lib64/wine:{top-level-wine-directory}/lib/wine"
-export LD_LIBRARY_PATH=top-level-wine-directory/lib64:{top-level-wine-directory}/lib
+export LD_LIBRARY_PATH={top-level-wine-directory}/lib64:{top-level-wine-directory}/lib
 export PATH={top-level-wine-directory}/bin":$PATH
 # this last one's for winetricks
 export WINE={top-level-wine-directory}/bin/wine
