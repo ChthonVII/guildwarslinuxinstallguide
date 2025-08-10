@@ -447,6 +447,8 @@ It's also possible to install gamescope 3.11 side-by-side with a newer version, 
 **Gamescope >=3.16:**
 The current version of gamescope does not have good compatibility with Guild Wars. It has trouble with games that show a non-fullscreen splash screen when starting. Whether it works depends on the version of gamescope, the version of wine, the version of various wayland libraries, whether it's running under the Steam runtime, and whether you're starting `Gw.exe` directly or via a launcher/injector. Changes or updates to any of these may unexpectedly break, or fix, gamescope working with Guild Wars. (The one thing that consistently worked, until recently, was to use Proton and the Steam runtime. But the Guild Wars bug explained in Part 3 broke that option.)
 
+Note that gamescope >=3.16 fails if you use `wine start /d <path> <exe>`-style commands. You must revise your launcher script to `cd` into Guid Wars' installation directory and then use a `gamescope -- wine Gw.exe`-style command.
+
 To install the current version of gamescope:
 
 ```
