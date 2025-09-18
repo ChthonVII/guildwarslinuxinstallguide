@@ -111,6 +111,8 @@ To install Wine and its dependencies, follow [the instructions at WineHQ](https:
 
 This recommendation may change in the relatively near future when NTSYNC becomes available. It is expected that that NTSYNC will eventually find its way into all three wine branches (stable, devel, and staging), and that ESYNC will be removed. There may be a transitional period where a TkG build may be recommended to retain access to ESYNC/FSYNC if you don't have a new enough kernel for NTSYNC. (See Part 7.)
 
+**Note:** TexMod/uMod/gMod are broken due to a regression in wine-staging v10.15. For the time being, stay on wine-staging v10.14, or install wine-staging v10.14 in parallel.
+
 #### Other Options:
 
 - "Distro" wine. Wine packaged by your Linux distribution. This is almost always an outdated version of official wine. There's pretty much no reason to ever use this. Reconfigure your package manager to use the official repo for wine.
@@ -123,13 +125,15 @@ It is possible to have more than one version of wine present on your system. By 
 export WINEVERPATH={top-level-wine-directory}
 export WINELOADER={top-level-wine-directory}/bin/wine
 export WINESERVER={top-level-wine-directory}/bin/wineserver
-export WINEDLLPATH={top-level-wine-directory}/lib64/wine:{top-level-wine-directory}/lib/wine
-export LD_LIBRARY_PATH={top-level-wine-directory}/lib64:{top-level-wine-directory}/lib
+export WINEDLLPATH={top-level-wine-directory}/lib/wine/x86_64-windows/:{top-level-wine-directory}/lib/wine/i386-windows/
+export LD_LIBRARY_PATH={top-level-wine-directory}/lib/wine/x86_64-unix/:{top-level-wine-directory}/lib/wine/i386-unix/
 export PATH={top-level-wine-directory}/bin:$PATH
 # this last one's for winetricks
 export WINE={top-level-wine-directory}/bin/wine
 ```
 (Note: Releases of custom wine are not consistent about their directory structures. You may need to make adjustments. WINEDLLPATH should point to directories that contain .dll files. LD_LIBRARY_PATH should point to directories that contain .so files. Neither of these are recursive; you must specify the directory directly containing the files.)
+
+If you want to use packaged wine, like the official WineHQ version, as a secondary wine installation, you can do so by extracting the files from the packages to the directory you want. For example, the WineHQ wine-staging Debian packages consist of `wine_staging_{version}.deb`, `wine-staging-amd64_{version}.deb`, `wine-staging-i386_{version}.deb`, and `winehq-staging_{version}.deb`. Extract the `opt/wine-staging` directory from `wine_staging_{version}.deb` to someplace in your home directory (instead of `/opt`), then extract the `opt\wine-staging\lib` directory from both `wine-staging-amd64_{version}.deb` and `wine-staging-i386_{version}.deb` inside of that. (`winehq-staging_{version}.deb` contains only symlinks and isn't needed for a secondary installation.) You can now use this version of wine via the `export` statements above.
 
 Additionally, Proton expects the Steam runtime environment. For versions 1.0 and 2.0 of the Steam runtime environment, this could be accomplished through a very complicated configuration for `LD_LIBRARY_PATH`. For Steam runtime 3.0, you pretty much need umu launcher (which, as explained above, doesn't work with Guild Wars). If your system is reasonably similar to whatever version of Ubuntu LTS Steam runtime is based on, you may be able to run Proton without the Steam runtime.
 
