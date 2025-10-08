@@ -5,7 +5,7 @@
 - **[Part 0: About This Guide](#part-0-about-this-guide)**
 - **[Part 1: About Environment Variables and Bash Scripts](#part-1-about-environment-variables-and-bash-scripts)**
 - **[Part 2: Setting Up 32-Bit Support](#part-2-setting-up-32-bit-support)**
-- **[Part 3: Choosing a Wine Version](#part-3-choosing-a-wine-version)**
+- **[Part 3: Choosing a Wine Fork](#part-3-choosing-a-wine-fork)**
 - **[Part 4: Basic Guild Wars Installation](#part-4-basic-guild-wars-installation)**
 - **[Part 5: FPS Control](#fps-control)**
 - **[Part 6: DXVK](#part-6-dxvk)**
@@ -97,30 +97,39 @@ Install Wine and its dependencies, both 64- and 32-bit, by following [the instru
 If you have wine >= 10.2, you may use the "new wow64 mode" to run 32-bit Windows programs inside 64-bit Linux processes. In this case, you do not need any 32-bit Linux system libraries. To use the "new wow64 mode," you must set the environment variable `WINEARCH=wow64` each time you invoke wine.
 
 
-## Part 3: Choosing a Wine Version
+## Part 3: Choosing a Wine Fork
 
 Many forks of wine exist, giving you many options you could use to run Guild Wars. This section will help you choose.
 
-#### Recommended, Official Wine Staging:
+#### Recommended, Depends on Kernel:
 
-This guide presently recommends `wine-staging` from the official repo at WineHQ. This is simple to set up, and offers performance on par with any other option, after setting up DXVK (see Part 6) and ESYNC (see Part 7).
+Recent developments make it impossible to offer a good one-size-fits-all recommendation. For the time being, the recommended wine fork depends on your kernel:
 
-To install Wine and its dependencies, follow [the instructions at WineHQ](https://wiki.winehq.org/Download). If you choose to use a different version of wine that comes as unpackaged binaries, install this anyway to get the dependencies.
+- **If you are using your distro's stock kernel, and your kernel version is >=6.14,** then the recommendation is `wine` (or `wine-devel` or `wine-staging`) from the official repo at WineHQ. This is simple to set up, and offers performance on par with any other option, after setting up DXVK (see Part 6) and NTSYNC (see Part 7). Eventually, distros with older kernels will catch up and this recommendation will apply to everyone.
 
-`wine-staging` is specifically recommended (as opposed to `wine-stable` or `wine-devel`) because it supports ESYNC. (See Part 7.)
+- **If you are using a backports/custom kernel, and your kernel version is >=6.14,** then the recommendation is a TkG or other custom wine build with NTSYNC support, such as Kron4ek's `wine-{version}-staging-tkg-amd64-wow64` [builds](https://github.com/Kron4ek/Wine-Builds/releases). A big set of users to whom this applies is Debian Trixie (stable) with a backported kernel. See below for how to set up unpackaged wine.
 
-This recommendation may change in the relatively near future when NTSYNC becomes available. It is expected that that NTSYNC will eventually find its way into all three wine branches (stable, devel, and staging), and that ESYNC will be removed. There may be a transitional period where a TkG build may be recommended to retain access to ESYNC/FSYNC if you don't have a new enough kernel for NTSYNC. (See Part 7.)
-
-**Note:** TexMod/uMod/gMod are broken due to a regression in wine-staging v10.15. For the time being, stay on wine-staging v10.14, or install wine-staging v10.14 in parallel.
+- **If your kernel version is <6.14,** then the recommendation is a TkG or other custom wine build that still has ESYNC or FSYNC support. Starting from wine v10.17, Kron4ek plans to release separate FSYNC [builds](https://github.com/Kron4ek/Wine-Builds/releases), which should be perfect for people stuck on old kernels. Until then, you will have to use a slightly outdated version of wine to get ESYNC or FSYNC support. See below for how to set up unpackaged wine.
 
 #### Other Options:
 
 - "Distro" wine. Wine packaged by your Linux distribution. This is almost always an outdated version of official wine. There's pretty much no reason to ever use this. Reconfigure your package manager to use the official repo for wine.
-- "TkG" wine. A custom build of wine that usually has the "staging" patches, plus a few other popular patches. For example, [Kron4ek's TkG builds](https://github.com/Kron4ek/Wine-Builds). The main selling point over official `wine-staging` is FSYNC. (See Part 7.)
+- "TkG" wine. A custom build of wine that usually has the "staging" patches, plus a few other popular patches. For example, [Kron4ek's TkG builds](https://github.com/Kron4ek/Wine-Builds). The main selling point over official `wine-staging` is NTSYNC on distros where the official `wine-staging` doesn't support it (e.g., Debian Trixie with backports kernel), or still being able to use ESYNC/FSYNC with old kernels. (See Part 7.)
 - Proton, inside Steam. A version of wine made by Valve for Steam featuring gaming/performance modifications. It is possible to add Guild Wars to Steam as a "non-Steam game." This is not recommended because Steam makes it difficult to run uMod and Toolbox in the same wine prefix, and very painful to install DirectSong. (See Part 16.)
-- Proton, outside Steam. It is possible to run Proton, or wine with Proton-like modifications, outside of Steam. In the past, this was recommended for maximum performance. However, Proton outside Steam is no longer recommended due to a showstopping Guild Wars bug, and also because it's very painful to install DirectSong. In the past year or so, the universe of "Proton without Steam" has mostly condensed into [umu](https://github.com/Open-Wine-Components). Unfortunately, when running under umu, Guild Wars incorrectly detects that it's running under Steam, attempts to initialize the Steam API, then crashes when SteamAPI_Init() fails. This leaves few working options for "Proton outside Steam": You can use the outdated [last build of Wine-GE](https://github.com/GloriousEggroll/wine-ge-custom/releases/tag/GE-Proton8-26) from 2/2024, or [Kron4ek's Proton builds](https://github.com/Kron4ek/Wine-Builds) which do *not* use the Steam Runtime.
+- Proton, outside Steam. It is possible to run Proton, or wine with Proton-like modifications, outside of Steam. In the past, this was recommended for maximum performance. However, Proton outside Steam is no longer recommended due to a showstopping Guild Wars bug, and also because it's very painful to install DirectSong. Recently, the universe of "Proton without Steam" has mostly condensed into [umu](https://github.com/Open-Wine-Components). Unfortunately, when running under umu, Guild Wars incorrectly detects that it's running under Steam, attempts to initialize the Steam API, then crashes when SteamAPI_Init() fails. This leaves few working options for "Proton outside Steam": You can use the outdated [last build of Wine-GE](https://github.com/GloriousEggroll/wine-ge-custom/releases/tag/GE-Proton8-26) from 2/2024, or [Kron4ek's Proton builds](https://github.com/Kron4ek/Wine-Builds) which do *not* use the Steam Runtime.
 
-It is possible to have more than one version of wine present on your system. By default, whichever version is installed as `/usr/bin/wine` is what will run when the `wine` command is invoked. Usually this will be "official" wine (or "distro" wine). Since that's the recommended version, **simply invoking `wine` yields the correct result for most people**. If you want to run a version of wine other than the one at `/usr/bin/wine`, you can do that via environment variables, like so:
+#### Versions to Avoid
+
+- TexMod/uMod/gMod are broken due to a regression in wine-staging v10.15. It's fixed in v10.16. Avoid staging-v10.15.
+- WineHQ's Debian packages of v10.16 were accidentally built without NTSYNC support, contrary to their release notes. Presumably a hotfix release is coming. (Note however that the Debian *Trixie* packages will *never* have NTSYNC support because Trixie's stock kernel is only v6.12.)
+
+#### Installing Wine
+
+To install Wine and its dependencies, follow [the instructions at WineHQ](https://wiki.winehq.org/Download). Even if you choose to use a fork of wine that comes as unpackaged binaries, install this anyway to get the dependencies.
+
+To install an unpackaged wine build, install the dependencies (as per above), extract the binaries somewhere, and invoke wine with the environment variables explained below.
+
+It is possible to have more than one version of wine present on your system. By default, whichever version is installed as `/usr/bin/wine` is what will run when the `wine` command is invoked. Usually this will be "official" wine (or "distro" wine). If you want to run a version of wine other than the one at `/usr/bin/wine` (for example, an unpackaged TkG build), you can do that via environment variables, like so:
 ```
 export WINEVERPATH={top-level-wine-directory}
 export WINELOADER={top-level-wine-directory}/bin/wine
@@ -133,7 +142,7 @@ export WINE={top-level-wine-directory}/bin/wine
 ```
 (Note: Releases of custom wine are not consistent about their directory structures. You may need to make adjustments. WINEDLLPATH should point to directories that contain .dll files. LD_LIBRARY_PATH should point to directories that contain .so files. Neither of these are recursive; you must specify the directory directly containing the files.)
 
-If you want to use packaged wine, like the official WineHQ version, as a secondary wine installation, you can do so by extracting the files from the packages to the directory you want. For example, the WineHQ wine-staging Debian packages consist of `wine_staging_{version}.deb`, `wine-staging-amd64_{version}.deb`, `wine-staging-i386_{version}.deb`, and `winehq-staging_{version}.deb`. Extract the `opt/wine-staging` directory from `wine_staging_{version}.deb` to someplace in your home directory (instead of `/opt`), then extract the `opt\wine-staging\lib` directory from both `wine-staging-amd64_{version}.deb` and `wine-staging-i386_{version}.deb` inside of that. (`winehq-staging_{version}.deb` contains only symlinks and isn't needed for a secondary installation.) You can now use this version of wine via the `export` statements above.
+If you want to use packaged wine, like the official WineHQ version, as a secondary wine installation, you can do so by extracting the files from the packages and treating it like unpackaged wine. For example, the WineHQ wine-staging Debian packages consist of `wine_staging_{version}.deb`, `wine-staging-amd64_{version}.deb`, `wine-staging-i386_{version}.deb`, and `winehq-staging_{version}.deb`. Extract the `opt/wine-staging` directory from `wine_staging_{version}.deb` to someplace in your home directory (instead of `/opt`), then extract the `opt\wine-staging\lib` directory from both `wine-staging-amd64_{version}.deb` and `wine-staging-i386_{version}.deb` inside of that. (`winehq-staging_{version}.deb` contains only symlinks and isn't needed for a secondary installation.) You can now use this version of wine via the `export` statements above.
 
 Additionally, Proton expects the Steam runtime environment. For versions 1.0 and 2.0 of the Steam runtime environment, this could be accomplished through a very complicated configuration for `LD_LIBRARY_PATH`. For Steam runtime 3.0, you pretty much need umu launcher (which, as explained above, doesn't work with Guild Wars). If your system is reasonably similar to whatever version of Ubuntu LTS Steam runtime is based on, you may be able to run Proton without the Steam runtime.
 
@@ -178,13 +187,13 @@ wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild 
 ```
 When launching Gw.exe via another program, such as uMod, Steam, GW Launcher, or Injectory, there should be an option for passing line parameters to `Gw.exe`.
 
-**Background Information:** Historically Guild Wars has suffered from a bug where, at very high framerates, players/heroes/henchmen/monsters/minipets/NPCs would appear to "teleport" from one place to another without visibly walking through the space in between. This issue is caused in part by threading issues in the client (letting the graphics loop run full tilt starves the network loop of CPU) and in part by the client's game world logic simulation running too far ahead of the server's and going out of sync. A 180 fps limit was added in the 4/15/2025 patch, and, when that proved insufficient, the limit was lowered to 90 fps in the 4/29/2025 patch. The point where problems begin to appear seems to vary with hardware (and probably geographic location). Historically many users have reported 144 as the highest "safe" fps, but some users have encounted problems at lower fps, and some users have run (much) higher fps with no problems. 
+**Background Information:** Historically Guild Wars has suffered from a bug where, at very high framerates, players/heroes/henchmen/monsters/minipets/NPCs would appear to "teleport" from one place to another without visibly walking through the space in between. This issue is caused in part by threading issues in the client (letting the graphics loop run full tilt starves the network loop of CPU) and in part by the client's game world logic simulation running too far ahead of the server's and going out of sync. A 180 fps limit was added in the 4/15/2025 patch, and, when that proved insufficient, the limit was lowered to 90 fps in the 4/29/2025 patch. The point where problems begin to appear seems to vary with hardware (and probably also geographic distance from the server). Historically many users have reported 144 as the highest "safe" fps, but some users have encounted problems at lower fps, and some users have run (much) higher fps with no problems. 
 
 ## Part 6: DXVK
 
-[DXVK](https://github.com/doitsujin/dxvk) is a translation layer from Direct3D 8/9/10/11 to Vulkan. It offers a *tremendous* performance increase over wine's default DirectX-to-OpenGL translation. It also offers some graphical enhancements (see below) and enables/improves compatibility with various Vulkan-related things like [gamescope](https://github.com/ValveSoftware/gamescope), [MangoHUD](https://github.com/flightlessmango/MangoHud), and [vkBasalt](https://github.com/DadSchoorse/vkbasalt).
+[DXVK](https://github.com/doitsujin/dxvk) is a translation layer from Direct3D 8/9/10/11 to Vulkan. It offers a *tremendous* performance increase over wine's default DirectX-to-OpenGL translation. It also offers some graphical enhancements (see below) and enables/improves compatibility with various Vulkan-related things like [gamescope](https://github.com/ValveSoftware/gamescope), [MangoHUD](https://github.com/flightlessmango/MangoHud), and [vkBasalt](https://github.com/DadSchoorse/vkbasalt). (While DXVK gives a huge performance boost, Guild Wars still runs acceptably well on most systems without it.)
 
-Note that, since DXVK translates into Vulkan, it requires a GPU/drivers with adequate Vulkan support. While every relatively recent GPU (including intergrated graphics) will suffice, some older devices might not be able to run DXVK. If in doubt, see [here](https://github.com/doitsujin/dxvk/wiki/Driver-support).
+Note that, since DXVK translates into Vulkan, it requires a GPU/drivers with adequate Vulkan support. While every relatively recent GPU (including intergrated graphics) will suffice, some older devices might not be able to run DXVK. If in doubt, see [here](https://github.com/doitsujin/dxvk/wiki/Driver-support). (For older hardware that lacks sufficient Vulkan support, Gallium Nine may serve as an alternative to DXVK. However, this may require running an old version of Mesa, as Gallium Nine support in Mesa will soon be deprecated and removed.)
 
 Download [the latest relase of DXVK](https://github.com/doitsujin/dxvk/releases).
 
@@ -204,24 +213,27 @@ DXVK_HUD=1 wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (
 ```
 
 #### Graphical Enhancements via DXVK
-DXVK can override some aspects of Guild Wars' rendering behavior to provide graphical enhancments not otherwise available. Place `dxvk.conf` from the "extras" directory of this repo into your Guild Wars installation directory, and add or remove `#` marks at the start of lines to enable or disable each feature. See the comments in `dxvk.conf` for additional notes.
+DXVK can override some aspects of Guild Wars' rendering behavior to provide graphical enhancements not otherwise available. Place `dxvk.conf` from the "extras" directory of this repo into your Guild Wars installation directory, and add or remove `#` marks at the start of lines to enable or disable each feature. See the comments in `dxvk.conf` for additional notes.
 - Override Guild Wars' maximum 8x antialiasing with 16x antialiasing. In-game antialiasing must be set to something other than "none." **Note:** Over strenuous objections, this feature was removed in DXVK v2.7. If you want it, use a version of DXVK older than 2.7.
 - Override Guild Wars' default anisotropic sampling with 16x anisotropic sampling.
 - Override Guild Wars' native per-pixel shading with per-sample shading. This noticeably improves the appearance of foliage, and also player armor with "frills" like several Vabbian sets, eliminating shimmer on the edges of fine details. Note that per-sample shading softens edges that some users might prefer crisply aliased, especially on low resoluton/dpi monitors, such as the small in-game fonts. This feature is *very* demanding on GPU.
 - Adjust LOD bias to increase texture detail/sharpness.
 - Override Guild Wars' native vsync with mailbox present mode, an alternative implementation of vsync that gives the lowest possible frame latency without tearing. Mailbox present mode is highly recommended if you have a 60Hz monitor and your GPU can reliably exceed 120 fps. (At framerate-to-refresh-rate ratios lower than 2x, mailbox present mode is not recommended because it tends to have noticeably juttery motion due to uneven frame latency.) You must run Guild Wars with the `-fps <number>` parameter to allow FPS over 90, and you must disable native vsync in Guild Wars' in-game options. **Note:** Not all GPUs/drivers support mailbox present mode. To check if your system supports it, download the [Vulkan Hardware Capability Viewer](https://www.vulkan.gpuinfo.org/download.php) and check if "MAILBOX" is present under "Surface" > "Present Modes".
 
-**Note:** While DXVK gives a huge performance boost, Guild Wars still runs acceptably well on most systems without it.
-
-**Note:** For older hardware that lacks sufficient Vulkan support, Gallium Nine may serve as an alternative to DXVK. However, this may require running an old version of Mesa, as Gallium Nine support in Mesa will soon be deprecated and removed.
 
 ## Part 7: ESYNC/FSYNC/NTSYNC
 
-ESYNC and FSYNC are alternative implementations for simulating Windows' thread synchronization that yield a significant performance increase for most games. (They also crash a small minority of games, but Guild Wars is not among them.) ESYNC and FSYNC have roughly equal performance.
+ESYNC, FSYNC, and NTSYNC are alternative implementations for simulating Windows' thread synchronization that yield a substantial performance increase for most games. (ESYNC and FSYNC also crash a small minority of games, but Guild Wars is not among them. NTSYNC is a fully correct reproduction of Windows' thread synchronization behavior.) All three have roughly equal performance, with NTSYNC marginally better than FSYNC, and FSYNC marginally better than ESYNC, in most cases.
+
+#### NTSYNC:
+
+NTSYNC is available in official `wine`, `wine-devel`, and `wine-staging` starting from v10.16, and also some custom TkG/Proton builds starting earlier. NTSYNC is enabled by default, with no announcement to the console.
+
+NTSYNC requires kernel support. Kernels >=v6.14 should have NTSYNC support. However, in many cases, this is via a kernel module that is *not* loaded by default. To see if the module is loaded, check if `/dev/ntsync` exists. To load the module for the current session only, run `sudo modprobe ntsync`. To always load the module at boot time (on distros using systemd), create the file `/etc/modules-load.d/ntsync.conf` (owned by root), with text content `ntsync`. To check if the ntsync virtual device is accessible to non-root users, make sure the module is loaded, then run `sudo udevadm info --name=ntsync` and verify that `DEVMODE=0666` (or 0644). If it's not, you need [a udev rule](https://aur.archlinux.org/cgit/aur.git/tree/99-ntsync.rules?h=ntsync) to fix it. Finally, to check if NTSYNC is working, run `lsof /dev/ntsync` while Guild Wars is running, and you should see several wine-related processes listed.
 
 #### ESYNC:
 
-ESYNC is available in the official `wine-staging`, TkG builds, and Proton. ESYNC is disabled by default and must be enabled by setting the enviroment variable `WINEESYNC=1`. (In Proton, it's enabled by default, unless disabled by the environment variable `PROTON_NO_ESYNC=1`.) You only need to set this variable when playing Guild Wars. It does not need to be set for the installation/setup/testing/configuration tasks in this guide.
+ESYNC is available in the official `wine-staging`, TkG builds, and Proton prior to v10.16. Wine builds starting from v10.16 might not have ESYNC anymore. ESYNC is disabled by default and must be enabled by setting the environment variable `WINEESYNC=1`. (In Proton, it's enabled by default, unless disabled by the environment variable `PROTON_NO_ESYNC=1`.) You only need to set this variable when playing Guild Wars. It does not need to be set for the installation/setup/testing/configuration tasks in this guide.
 
 ESYNC uses a large number of file descriptors. This poses a problem on some Linux distros that set a very low default limit for how many file descriptors one process may create. To check the limit on your system, use `ulimit -Hn`. 1048576 is considered acceptably high for ESYNC in general. (Since Guild Wars doesn't make heavy use of multithreading, 524288 is probably enough too.) To change the default limit on a distro that uses systemd, edit both `/etc/systemd/system.conf` and `/etc/systemd/user.conf`, uncommenting and changing the appropriate line to `DefaultLimitNOFILE=1048576`, then reboot. To change the default limit on a distro that doesn't use systemd, edit `/etc/security/limits.conf`, adding lines
 ```
@@ -234,17 +246,11 @@ Testing: You should see "esync: up and running." the console output when you run
 
 #### FSYNC:
 
-FSYNC is available in most TkG builds and Proton. FSYNC must be enabled by setting the enviroment variable `WINEFSYNC=1`. (In Proton, it's enabled by default, unless disabled by the environment variable `PROTON_NO_FSYNC=1`.) If FSYNC is enabled (and supported by the kernel), then ESYNC is disabled automatically.  You only need to set this variable when playing Guild Wars. It does not need to be set for the installation/setup/testing/configuration tasks in this guide.
+FSYNC is available in most TkG builds and Proton prior to v10.16. Wine builds starting from v10.16 might not have FSYNC anymore. FSYNC must be enabled by setting the environment variable `WINEFSYNC=1`. (In Proton, it's enabled by default, unless disabled by the environment variable `PROTON_NO_FSYNC=1`.) If FSYNC is enabled (and supported by the kernel), then ESYNC is disabled automatically.  You only need to set this variable when playing Guild Wars. It does not need to be set for the installation/setup/testing/configuration tasks in this guide.
 
 FSYNC does not care about the file descriptor limit, but it does require kernel support. The current iteration of FSYNC (futex_waitv) requires kernel >=5.16.
 
 Testing: You should see "fsync: up and running." the console output when you run wine with FSYNC active.
-
-#### NTSYNC:
-
-NTSYNC is a forthcoming successor to ESYNC and FSYNC. Performance will be similar. The main difference is that, unlike ESYNC and FSYNC, NTSYNC is a fully correct reproduction of Windows' thread synchronization behavior. Accordingly, it is expected that NTSYNC will be merged into mainline wine, enabled by default, and ESYNC and FSYNC will be removed. NTSYNC requires kernel support that was merged in kernel 6.14.
-
-This part of this guide will require substantial revisions when that happens. (Unfortunately, the next Debian stable release is about to freeze its kernel at 6.12. Which means the state of affairs where everyone can use NTSYNC is probably years away.)
 
 
 ## Part 8: TexMod/uMod/gMod
