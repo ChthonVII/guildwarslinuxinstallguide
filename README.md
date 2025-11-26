@@ -438,7 +438,7 @@ Download `ChatFilter.ini` from [here](https://www.guildwarslegacy.com/ChatFilter
 
 Symlink it into the GW directory. (We use a symlink so you can update multiple wine prefixes at once.)
 ```
-ln -s ~/Documents/Guild\ Wars/ChatFilter.ini ~/.wine-gw/drive_c/Program\ Files\ (x86)/Guild\ Wars/ChatFilter.ini
+ln -s ~/Documents/Guild\ Wars/ChatFilter.ini ~/.wine-gw/drive_c/Program\ Files\ \(x86\)/Guild\ Wars/ChatFilter.ini
 ```
 
 
