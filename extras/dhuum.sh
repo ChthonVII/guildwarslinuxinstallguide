@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 # wait 2 minutes for GW to definitely be started before doing the first check
 sleep 120
 while true

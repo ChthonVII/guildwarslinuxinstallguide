@@ -46,7 +46,7 @@ After Guild Wars is fully set up, you will want to make a bash script to set all
 
 Example script: start dhuum.sh, uMod, and Guild Wars, then inject Toolbox (using ESYNC and dll hook for uMod, with fps limit increased to 144):
 ```
-#!/bin/bash
+#!/usr/bin/env bash
 
 export WINEPREFIX=~/.wine-gw
 export WINEDEBUG=-all
@@ -405,7 +405,7 @@ One option is to use the launcher. When Guild Wars is running, the launcher shou
 The other option is to inject the Toolbox dll silently via a command-line tool. The selling point of this option is that you can attain a zero-click Toolbox startup. Toolbox's launcher has a `/quiet` option that automatically injects if it only sees one `Gw.exe` process:
 
 ```
-#!/bin/bash
+#!/usr/bin/env bash
 export WINEPREFIX=~/.wine-gw
 {launch Guild Wars, maybe launch uMod first}
 sleep 1
@@ -438,7 +438,7 @@ Download `ChatFilter.ini` from [here](https://www.guildwarslegacy.com/ChatFilter
 
 Symlink it into the GW directory. (We use a symlink so you can update multiple wine prefixes at once.)
 ```
-ln -s ~/Documents/Guild\ Wars/ChatFilter.ini ~/.wine-gw/drive_c/Program\ Files\ (x86)/Guild\ Wars/ChatFilter.ini
+ln -s ~/Documents/Guild\ Wars/ChatFilter.ini ~/.wine-gw/drive_c/Program\ Files\ \(x86\)/Guild\ Wars/ChatFilter.ini
 ```
 
 

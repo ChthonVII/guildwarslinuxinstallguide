@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 # Example: Set launch options to /path/to/script %command% --run taskmgr.exe
 i=1
 w=999
