@@ -3,7 +3,7 @@
 
 ## Table of Contents
 - **[Part 0: About This Guide](#part-0-about-this-guide)**
-- **[Part 1: What About Steam/Lutris/Etc.?](#part1-what-about-steam-lutris-etc)**
+- **[Part 1: What About Steam/Lutris/Etc.?](#part-1-what-about-steamlutrisetc)**
 - **[Part 2: About Environment Variables and Bash Scripts](#part-2-about-environment-variables-and-bash-scripts)**
 - **[Part 3: Setting Up 32-Bit Support](#part-3-setting-up-32-bit-support)**
 - **[Part 4: Choosing a Wine Fork](#part-4-choosing-a-wine-fork)**
@@ -12,8 +12,8 @@
 - **[Part 7: DXVK](#part-7-dxvk)**
 - **[Part 8: ESYNC/FSYNC/NTSYNC](#part-8-esyncfsyncntsync)**
 - **[Part 9: TexMod/uMod/gMod](#part-9-texmodumodgmod)**
-- **[Part 10: DirectSong](#part-11-directsong)**
-- **[Part 11: DSOAL-GW1 (Deprecated)](#part-10-dsoal-gw1-deprecated)**
+- **[Part 10: DirectSong](#part-10-directsong)**
+- **[Part 11: DSOAL-GW1 (Deprecated)](#part-11-dsoal-gw1-deprecated)**
 - **[Part 12: Toolbox](#part-12-toolbox)**
 - **[Part 13: Chat Filter](#part-13-chat-filter)**
 - **[Part 14: paw\*ned2](#part-14-pawned2)**
