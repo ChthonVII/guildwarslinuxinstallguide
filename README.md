@@ -273,13 +273,13 @@ Testing: You should see "fsync: up and running." the console output when you run
 TexMod, uMod, and gMod are a family of utilities for replacing in-game textures. This enables graphical mods, such as removing the "frost" overlay from the skillbar, making UI elements translucent, spirit radar, etc. Of particular note is the famous [Cartography Made Easy mod](https://wiki.guildwars.com/wiki/Player-made_Modifications/Cartography_Index) that clearly shows which bits of fog can be removed for progress towards the cartography title. Files for TexMod and uMod can be found in the "extras" directory of this repo. gMod can be downloaded from [its github page](https://github.com/gwdevhub/gMod).
 
 #### TexMod:
-TexMod is the original texture-replacing tool from 2006. It is not recommended for playing Guild Wars, as it has occasional display bugs that are fixed in uMod and gMod. However, TexMod is useful for dumping textures if you want to make mods. Since uMod's texture dumping interface doesn't work in Linux, and gMod doesn't do texture dumping at all, TexMod is the only choice. No special installation is required. Simply extract the archive somewhere somewhere in the wine prefix and use TexMod to launch Guild Wars. For instance:
+TexMod is the original texture-replacing tool from 2006. It is not recommended for playing Guild Wars, as it has occasional display bugs that are fixed in uMod and gMod. However, TexMod is still useful for dumping textures if you want to make mods. No special installation is required. Simply extract the archive somewhere somewhere in the wine prefix and use TexMod to launch Guild Wars. For instance:
 ```
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\TexMod" "C:\Program Files (x86)\TexMod\Texmod.exe"
 ```
 
 #### uMod:
-uMod is an improved, open-source rewrite of TexMod from 2011. The version with best compatibility for Guild Wars is v1_r44. uMod is suitable for playing Guild Wars. However, if you want to make mods, its texture dumping interface doesn't work in Linux. No special installation is required. Simply extract the archive somewhere somewhere in the wine prefix. uMod offers two ways to "hook" Guild Wars.
+uMod is an improved, open-source rewrite of TexMod from 2011. The version with best compatibility for Guild Wars is v1_r44. uMod is suitable for playing Guild Wars. No special installation is required. Simply extract the archive somewhere somewhere in the wine prefix. uMod offers two ways to "hook" Guild Wars.
 - First, you can simply run uMod, and then start Guild Wars via uMod's "Main -> Start game through uMod" menu option. (Or use "Start game through uMod (with command line)" if you want to change the fps limit.)
 - Second, you can copy `d3d9.dll` from uMod's directory to Guild Wars' directory. Now if you start uMod first, and then start Guild Wars normally, uMod should "hook" Guild Wars. Make sure that the Guild Wars directory is the working directory when you invoke wine.
 
