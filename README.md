@@ -296,7 +296,7 @@ gMod is a simplified continuation of uMod with ongoing development since 2023. g
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i gMod.dll
 ```
 
-Since gMod doesn't have a user interface, you need to use a text file to tell it which mods to load. Create `~/.wine-gw/drive_c/Program Files/Guild Wars/modlist.txt` and populate it with a list of mod files (uMod's tpf or zip format), one per line, by full Windows-style paths.
+Since gMod doesn't have a user interface, you need to use a text file to tell it which mods to load. Create `~/.wine-gw/drive_c/Program Files (x86)/Guild Wars/modlist.txt` and populate it with a list of mod files (uMod's tpf or zip format), one per line, by full Windows-style paths.
 
 
 ## Part 10: DirectSong
