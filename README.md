@@ -135,6 +135,10 @@ Recent developments make it impossible to offer a good one-size-fits-all recomme
 - Proton, inside Steam. A version of wine made by Valve for Steam featuring gaming/performance modifications. It is possible to add Guild Wars to Steam as a "non-Steam game." This is not recommended because Steam makes it difficult to run uMod and Toolbox in the same wine prefix, and very painful to install DirectSong. (See Part 16.)
 - Proton, outside Steam. It is possible to run Proton, or wine with Proton-like modifications, outside of Steam. In the past, this was recommended for maximum performance. However, Proton no longer offers superior performance, and Proton outside Steam is no longer recommended due to headaches installing DirectSong, and the Guild Wars crash bug noted in Part 1. If you really want to run Guild Wars in Proton outside of Steam, then a fork that does *not* use the Steam runtime is recommended, such as [Kron4ek's Proton builds](https://github.com/Kron4ek/Wine-Builds) (which do not use the Steam runtime), or the outdated [last build of Wine-GE](https://github.com/GloriousEggroll/wine-ge-custom/releases/tag/GE-Proton8-26) from 2/2024. Umu is not recommended. 
 
+#### A Note About Wine/Proton 11.x:
+
+Some users experience a severe performance drop in Wine/Proton 11.x when an alternative cursor (e.g., the salvage cursor, the hero flag cursor, etc.) is active. If you experience this, use Wine/Proton 10.x instead.
+
 #### Installing Packaged Wine
 
 To install Wine and its dependencies, follow [the instructions at WineHQ](https://wiki.winehq.org/Download).
