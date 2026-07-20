@@ -491,6 +491,10 @@ GW Launcher will launch `Gw.exe` in a paused state and attempt to inject any dll
 
 GW Launcher has an option to pass command line parameters, like `-fps <number>` to `Gw.exe`.
 
+#### Daybreak
+
+[Daybreak](https://github.com/gwdevhub/Daybreak) is another multiboxing solution primarily for Windows, but it does have a native Linux version. (Please refer to the wiki on its github page for how to install webview2 and dotnetdesktop9.) While Linux users have little use for it as a multiboxing solution, you might possibly want to use it for its other features, such as its REST API that allows other programs to communicate with `Gw.exe`.
+
 
 ## Part 16: Solving Steam Headaches
 
