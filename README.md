@@ -60,7 +60,7 @@ This guide presents environment variables in a mix-and-match style. For one-off 
 
 After Guild Wars is fully set up, you may want to make a bash script to set all your environment variables and reduce everything to one click, then modify your Guild Wars desktop file (shortcut) to invoke your script.
 
-Example script: start dhuum.sh, uMod, and Guild Wars, then inject Toolbox (using dll hook for uMod, with fps limit increased to 144):
+Example script: start dhuum.sh, uMod, and Guild Wars (using dll hook for uMod, and Ultimate ASI Loader for Toolbox, with fps limit increased to 144):
 ```
 #!/usr/bin/env bash
 
@@ -73,8 +73,6 @@ bash dhuum.sh &
 wine start /d "C:\Program Files (x86)\uMod" "C:\Program Files (x86)\uMod\uMod.exe" &
 sleep 1
 wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\Gw.exe" -fps 144 &
-sleep 1
-wine start /d "C:\Program Files (x86)\GWToolbox" "C:\Program Files (x86)\GWToolbox\GWToolbox.exe" /quiet
 ```
 
 Sometimes Guild Wars may not exit cleanly, leaving behind a zombie process. You can use `dhuum.sh` from the "extras" directory of this repo to scan and kill `Gw.exe` if it becomes a zombie process, ensuring a clean exit. Download it into your Guild Wars installation directory and add it to your launcher script as shown in the example above.
@@ -382,13 +380,22 @@ WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\GWToolbox" "C:\Progr
 
 The launcher will create a directory at `~/Documents/GWToolboxpp/` containing the dll file and configuration data. (If wine prefix isolation is active, this will instead be created inside the prefix in the virtual user's "Documents" directory.)
 
-We now have two options to run Toolbox:
+We now have several options to run Toolbox. Option 3 is recommended.
 
-#### Option 1, The Launcher UI:
-One option is to use the launcher. When Guild Wars is running, the launcher should show the option to select a running Guild Wars instance by character name. You can start the launcher before or after you start Guild Wars.
+#### Option 1, Toolbox Launcher GUI:
+The customary method is to use Toolbox's launcher. When Guild Wars is running, the launcher UI should show the option to select a running Guild Wars instance by character name. You can start the launcher before or after you start Guild Wars.
 
-#### Option 2, Silent Injection:
-The other option is to inject the Toolbox dll silently via a command-line tool. The selling point of this option is that you can attain a zero-click Toolbox startup. Toolbox's launcher has a `/quiet` option that automatically injects if it only sees one `Gw.exe` process:
+The upsides to this method are that it's simple and documented on Toolbox's website.
+
+The downsides are:
+- (a) Clicking through the Toolbox launcher's UI is a needless hassle if you're only running one instance of the Guild Wars client.
+- (b) Injecting into an already-running process always entails a risk of crashing the process, and, since around mid 2025, Toolbox has been pretty prone to this, especially on Linux, and especially in Wine's new wow64 mode.
+
+Options 2, 3, and 4 are zero-click solutions. Options 3 and 4 won't crash upon injection because they inject earlier before the main loop starts running.
+
+#### Option 2, Toolbox Launcher Silent Mode:
+
+Toolbox's launcher has a `/quiet` option that automatically injects if it only sees one `Gw.exe` process. Launch Guild Wars first, then launch Toolbox's launcher with the `/quiet` parameter:
 
 ```
 #!/usr/bin/env bash
@@ -398,7 +405,21 @@ sleep 1
 wine start /d "C:\Program Files (x86)\GWToolbox" "C:\Program Files (x86)\GWToolbox\GWToolbox.exe" /quiet
 ```
 
-It's also possible to inject the Toolbox dll with generic injection utilities like [Injectory](https://github.com/blole/injectory) or [Injector](https://github.com/nefarius/Injector). A potentially useful feature of Injectory is the ability to launch `Gw.exe` in a paused state and inject before it starts running:
+#### Option 3, Ultimate ASI Loader:
+
+Ultimate ASI Loader shims a system dll that `Gw.exe` is going to load, loading the real system dll plus other arbitrary dlls of your choosing.
+
+This is the recommended method for injecting the Toolbox dll on Linux. Because it injects before the main loop starts, it's not prone to crashing like the Toolbox launcher. It also avoids the complication of launching a second process to do the injection, which becomes a major headache with Steam.
+
+Download the 32-bit `version.dll` from [Ultimate ASI Loader's github page](https://github.com/ThirteenAG/Ultimate-ASI-Loader). Place it in the Guild Wars directory. Add a library override via `winecfg` for `version.dll` setting it to "native, then built-in." Place `GWToolbox.dll` into the Guild Wars directory, and rename it to `GWToolbox.asi`. Start Guild Wars normally and Toolbox will automatically be injected.
+
+To revert, just remove or rename either Ultimate ASI Loader's `version.dll` or `GWToolbox.asi`.
+
+Surprisingly, Toolbox's in-game self-updater *does* correctly overwrite `GWToolbox.asi` when it updates.
+
+#### Option 4, Generic Injection Utilities:
+
+It's possible to inject the Toolbox dll with most generic injection utilities, such as [Injectory](https://github.com/blole/injectory), [Injector](https://github.com/nefarius/Injector), etc. Injectory is able to to launch `Gw.exe` in a paused state and inject before it starts running:
 
 ```
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i "C:\users\{your username}\Documents\GWToolboxpp\GWToolboxdll.dll"
@@ -412,9 +433,6 @@ Injectory also supports command line paramters, like `-fps <number>` for GW like
 ```
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i "C:\users\{your username}\Documents\GWToolboxpp\GWToolboxdll.dll" -a "-fps 144"
 ```
-
-**Note:** Following Guild Wars' major 4/15/2025 update, Guild Wars will often crash and hang with a black screen at the moment the Toolbox dll is injected, if you are using new wow64 mode for 32-bit support and inject while Guild Wars is already running. If you encounter this problem, you have two options: (1) Use 32-bit system libraries instead of new wow64 mode for 32-bit support; or (2) use Injectory, GW Launcher, or similar to launch `Gw.exe` in a paused state and inject before it starts running.
-
 
 ## Part 13: Chat Filter
 
@@ -563,12 +581,6 @@ See Part 10 for more information.
 
 #### Toolbox in Steam
 
-Installing Toolbox inside Steam entails a few extra headaches:
-- Download `GWToolbox.exe` into Steam's Guild Wars wine prefix at `{steam directory}/steamapps/compatdata/{random numbers}/pfx/drive_c/Program Files (x86)/GWToolbox`.
-- Use `steamarbitrarycommand.sh` to launch a .bat file that starts Guild Wars, sleeps for a few seconds, then starts Toolbox. See the example above.
-- Toolbox will create a directory at `{steam directory}/steamapps/compatdata/{random numbers}/pfx/drive_c/users/steamuser/Documents/GWToolboxpp` and try to download `GWToolboxdll.dll` into it and it will **fail**. You must [manually download the dll file from Toolbox's github](https://github.com/gwdevhub/GWToolboxpp/releases) and put it there. It seems that Toolbox somehow lacks permissions to create that file. Fortunately, once it exists, Toolbox is able to execute it, and also overwrite it when Toolbox updates.
-- Try your .bat file again. It should work now.
+Use the Ultimate ASI Loader method described in Part 12.
 
-Toolbox's `/quiet` parameter is a bit flakey inside Steam. It sometimes causes Guild Wars to black screen and hang. If this happens to you, try changing the delay before starting Toolbox, or just don't use `/quiet`.
-
-See Part 12 for more information.
+Alternatively, you can use `steamarbitrarycommand.sh` to launch a .bat script that launches both Guild Wars and Toolbox. For details, consult prior versions of this document in github's history. 
