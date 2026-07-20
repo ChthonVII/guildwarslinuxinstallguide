@@ -434,6 +434,14 @@ Injectory also supports command line paramters, like `-fps <number>` for GW like
 WINEPREFIX=~/.wine-gw wine start /d "C:\Program Files (x86)\Guild Wars" "C:\Program Files (x86)\Guild Wars\injectory.x86.exe" -l Gw.exe -i "C:\users\{your username}\Documents\GWToolboxpp\GWToolboxdll.dll" -a "-fps 144"
 ```
 
+#### Toolbox Troubleshooting:
+
+Now that Guild Wars is again receiving frequent updates, Toolbox is getting broken by Guild Wars updates fairly often.
+- Make sure you have the latest version of the Toolbox dll downloaded from github. Injecting an out-of-date Toolbox dll often crashes `Gw.exe`.
+- If Guild Wars has just received an update, Toolbox may be broken for everyone, not just you. Check reddit, discord, etc. You will need to wait until a new version of Toolbox is released.
+
+If you're getting a crash immediately upon injection with option 1 or 2, then try option 3 or 4.
+
 ## Part 13: Chat Filter
 
 Install the community-maintained chat filter list to silence most of the obnoxious RMT spam in Kamadan:
