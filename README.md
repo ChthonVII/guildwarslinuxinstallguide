@@ -367,7 +367,7 @@ DSOAL-GW1 is obselete now that its core functionality has been incorporated into
 
 If you previously installed DSOAL-GW1, delete or rename its `dsound.dll` and `dsoal-aldrv.dll` files and remove the override for `dsound`.
 
-(If, for some reason, you want to continue using DSOAL-GW1, it *might* be possible via `Gw.exe`'s `-dsound` parameter. Consult prior versions of this document in github's history.)
+(If, for some reason, you want to continue using DSOAL-GW1, it is possible via `Gw.exe`'s `-dsound` parameter. Consult prior versions of this document in github's history.)
 
 
 ## Part 12: Toolbox
